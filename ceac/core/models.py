@@ -15,6 +15,7 @@ class Ente(models.Model):
     nome = models.CharField(_('Nome'), max_length=100, blank=False)
     nome_artistico = models.CharField(_('Nome Artistico'), max_length=150)
     cpfcnpj = models.IntegerField(_('CPF/CPNJ'), max_length=12, unique=True, blank=False)
+    processo = models.IntegerField(_('Numero do Processo'), max_length=14, unique=True, blank=True)
     dt_abertura_processo = models.DateField(_('Data de abertura do Processo'))
 
     class Meta:
