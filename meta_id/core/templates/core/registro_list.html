@@ -1,0 +1,8 @@
+<h1>Registros</h1>
+<ul>
+	{% for registro in object_list %}
+	<li>{{ registro.ente.nome }} - {{ registro.num_ceac }}</li>
+	{% empty %}
+		<li>Sem registros.</li>
+	{% endfor %}
+</ul>

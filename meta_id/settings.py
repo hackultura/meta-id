@@ -1,5 +1,5 @@
 """
-Django settings for ceac project.
+Django settings for meta-id project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.7/topics/settings/
@@ -41,8 +41,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django_extensions',
     'debug_toolbar',
-    'ceac.core',
-    'ceac.analise',
+    'meta_id.core',
+    'meta_id.analise',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -55,9 +55,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'ceac.urls'
+ROOT_URLCONF = 'meta_id.urls'
 
-WSGI_APPLICATION = 'ceac.wsgi.application'
+WSGI_APPLICATION = 'meta_id.wsgi.application'
 
 
 # Database
