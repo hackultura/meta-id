@@ -3,13 +3,20 @@ from django.db import models
 
 from django.utils.translation import ugettext_lazy as _
 
-from django_postgres import JSONField
+from postgres import fields
+
+
+DECISAO_ANALISE = (
+    (1, 'Favorável'),
+    (2, 'Em Diligência'),
+    (3, 'Desfavorável'),
+)
 
 
 class Pedido(models.Model):
     ente = models.ForeignKey('core.Ente')
     data_pedido = models.DateField(_('Data do Pedido'))
-    areas_atuacao = JSONField(_('Áreas de Atuação'))
+    areas_atuacao = fields.JSONField(_('Áreas de Atuação'))
 
     class Meta:
         verbose_name = "pedido"
@@ -24,8 +31,8 @@ class Parecer(models.Model):
     responsavel = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     texto_parecer = models.TextField(_('Parecer'))
     decisao = models.IntegerField(_('Decisão do parecerista'), max_length=1, choices=DECISAO_ANALISE)
-    data_decisao = models.DateField(_('Data da Decisão'), auto_add=True)
-    areas_atuação = JSONField(_('Áreas de Atuação'))
+    data_decisao = models.DateField(_('Data da Decisão'))
+    areas_atuacao = fields.JSONField(_('Áreas de Atuação'))
 
     class Meta:
         verbose_name = "analise"
