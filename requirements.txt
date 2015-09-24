@@ -2,7 +2,8 @@ dj-database-url==0.3.0
 Django==1.8.3
 django-debug-toolbar==1.3.2
 django-extensions==1.5.5
--e hg+https://bitbucket.org/schinckel/django-postgres#egg=django-postgres
+-e hg+https://bitbucket.org/schinckel/django-postgres@6a6078d8a2cc30bfb61d093354b8228f76484a0c#egg=django_postgres-dev
+djangorestframework==3.2.4
 ipython==3.2.1
 psycopg2==2.6.1
 six==1.9.0
