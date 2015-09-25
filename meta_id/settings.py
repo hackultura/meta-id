@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 Django settings for meta-id project.
 
@@ -73,14 +75,14 @@ WSGI_APPLICATION = 'meta_id.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
+# Alem disso, usando o dj-database-url que configura o banco a partir
+# da variavel de ambiente DATABASE_URL, e caso não encontre uma
+# utiliza um valor padrão.
 
+# https://pypi.python.org/pypi/dj-database-url
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.getenv(
-            'META_ID_DATABASE_URL',
-            'postgres://meta_id:123456@localhost/meta_id_app'
-
-        )
+        default='postgres://meta_id:123456@localhost/meta_id_app'
     )
 }
 
