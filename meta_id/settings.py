@@ -16,18 +16,28 @@ import dj_database_url
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
+# Aviso: Tenta obter uma chave através de uma variavél de ambiente
+# Caso não encontre, utiliza uma chave de 49 caracteres gerada automaticamente
+# durante a criação do projeto.
+SECRET_KEY = os.getenv(
+    'META_ID_SECRET_KEY',
+    'x@4$z5(ynk6gaza@h+2e&8v_&vy^8wznx#0*f6e+%bwz5rvxzv'
+)
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'x@4$z5(ynk6gaza@h+2e&8v_&vy^8wznx#0*f6e+%bwz5rvxzv'
+# AVISO: Não execute sua aplicação em produção com o DEBUG ligado.
+# O padrão é False(Desligado), sendo necessário setar a variável META_ID_DEBUG
+# como True para que o DEBUG passe a funcionar.
+DEBUG = os.getenv(
+    'META_ID_DEBUG',
+    False
+)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+TEMPLATE_DEBUG = os.getenv(
+    'META_ID_TEMPLATE_DEBUG',
+    False
+)
 
-TEMPLATE_DEBUG = True
-
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [os.getenv('META_ID_DOMAIN', 'localhost')]
 
 
 # Application definition
@@ -66,7 +76,11 @@ WSGI_APPLICATION = 'meta_id.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgres://ceac_app:123456@localhost/ceac_app'
+        default=os.getenv(
+            'META_ID_DATABASE_URL',
+            'postgres://meta_id:123456@localhost/meta_id_app'
+
+        )
     )
 }
 
