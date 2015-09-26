@@ -4,7 +4,7 @@ from django.contrib import admin
 urlpatterns = patterns(
     '',
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^registro/', include('meta_id.core.urls')),
+    url(r'^api-v1/', include('meta_id.core.urls', namespace='api')),
 
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 

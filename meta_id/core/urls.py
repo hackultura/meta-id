@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
-from .views import RegistroListView
+from .views import EnteListView
 
 urlpatterns = [
-    url(r'^$', RegistroListView.as_view(), name='registro-list'),
+    url(r'^$', EnteListView.as_view(), name='entes-list'),
 ]

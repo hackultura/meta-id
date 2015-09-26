@@ -1,15 +1,8 @@
-from django.views.generic import ListView
-from django.utils import timezone
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
-from .models import Ente, Registro
+class EnteListView(APIView):
 
-
-class RegistroListView(ListView):
-
-    model = Registro
-
-    def get_context_data(self, **kwargs):
-        context = super(RegistroListView, self).get_context_data(**kwargs)
-        context['now'] = timezone.now()
-        return context
+    def get(self, *args):
+        return Response(status=200)
 
