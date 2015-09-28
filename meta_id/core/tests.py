@@ -13,6 +13,15 @@ class EnteTest(APITestCase):
     def setUp(self):
 
         self.url = reverse('api:entes-list')
+        self.data = {
+            'nome': 'Cicrano Beltrano',
+            'informacoes_geograficas': [{
+                'endereco': 'Av. Vladmir Herzog, 156',
+                'bairro': 'Jardim Botanico',
+                'uf': 'DF',
+                'cep': '71000-000',
+            }],
+        }
 
     def test_access_url_to_list_all_entes(self):
 
@@ -31,18 +40,20 @@ class EnteTest(APITestCase):
 
     def test_persist_an_ente_using_POST(self):
 
-        data = {
-            'nome': 'Cicrano Beltrano'
-        }
-        response = self.client.post(self.url, data, format='json')
+        response = self.client.post(self.url, self.data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Ente.objects.first().nome, 'Cicrano Beltrano')
 
     def test_persist_an_ente_returning_uuid_as_id_pub(self):
 
-        data = {
-            'nome': 'Cicrano Beltrano'
-        }
-        response = self.client.post(self.url, data, format='json')
+        response = self.client.post(self.url, self.data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertContains(response, 'id_pub', status_code=201)
+
+    def test_persist_geographic_informantion_of_ente(self):
+
+        response = self.client.post(self.url, self.data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertContains(response, self.data, status_code=201)
+
+
