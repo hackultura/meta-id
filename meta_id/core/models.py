@@ -1,3 +1,4 @@
+import uuid
 # from django.conf import settings
 from django.db import models
 
@@ -7,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Ente(models.Model):
+    id_pub = models.UUIDField(default=uuid.uuid4, editable=False)
     nome = models.CharField(_('Nome'), max_length=100, blank=False)
     # nome_artistico = models.CharField(_('Nome Artistico'), max_length=150)
     # cpfcnpj = models.BigIntegerField(_('CPF/CPNJ'), max_length=12, unique=True, blank=False)

@@ -37,3 +37,12 @@ class EnteTest(APITestCase):
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Ente.objects.first().nome, 'Cicrano Beltrano')
+
+    def test_persist_an_ente_returning_uuid_as_id_pub(self):
+
+        data = {
+            'nome': 'Cicrano Beltrano'
+        }
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertContains(response, 'id_pub', status_code=201)

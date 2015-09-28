@@ -5,6 +5,7 @@ from .models import Ente
 
 class EnteSerializer(serializers.Serializer):
 
+    id_pub = serializers.UUIDField(required=False)
     nome = serializers.CharField(max_length=100)
 
     def create(self, validated_data):
