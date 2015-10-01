@@ -10,10 +10,11 @@ from django.utils.translation import ugettext_lazy as _
 class Ente(models.Model):
     id_pub = models.UUIDField(default=uuid.uuid4, editable=False)
     nome = models.CharField(_('Nome'), max_length=100, blank=False)
-    # nome_artistico = models.CharField(_('Nome Artistico'), max_length=150)
-    # cpfcnpj = models.BigIntegerField(_('CPF/CPNJ'), max_length=12, unique=True, blank=False)
-    # processo = models.BigIntegerField(_('Numero do Processo'), max_length=14, unique=True, blank=True, null=True)
-    # dt_abertura_processo = models.DateField(_('Data de abertura do Processo'))
+    endereco = models.TextField(_('Endereço'), blank=True)
+    bairro = models.TextField(_('Bairro'), blank=True)
+    uf = models.TextField(_('UF'), blank=True)
+    cep = models.TextField(_('CEP'), blank=True)
+
 
     class Meta:
         verbose_name = "ente"
@@ -27,7 +28,10 @@ class Ente(models.Model):
 
 
 class Registro(models.Model):
-    num_ceac = models.AutoField(_('Numero de Registro de CEAC'), primary_key=True)
+    num_ceac = models.AutoField(
+        _('Numero de Registro de CEAC'),
+        primary_key=True
+    )
     ente = models.ForeignKey(Ente)
 
     class Meta:

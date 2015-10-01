@@ -14,13 +14,13 @@ class EnteTest(APITestCase):
 
         self.url = reverse('api:entes-list')
         self.data = {
-            'nome': 'Cicrano Beltrano',
-            'informacoes_geograficas': [{
-                'endereco': 'Av. Vladmir Herzog, 156',
-                'bairro': 'Jardim Botanico',
-                'uf': 'DF',
-                'cep': '71000-000',
-            }],
+            "nome": "Cicrano Beltrano",
+            "informacoes_geograficas": {
+                "endereco": "Av. Vladmir Herzog, 156",
+                "bairro": "Jardim Botanico",
+                "uf": "DF",
+                "cep": "71000-000",
+            },
         }
 
     def test_access_url_to_list_all_entes(self):
@@ -54,6 +54,7 @@ class EnteTest(APITestCase):
 
         response = self.client.post(self.url, self.data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        print(response.content)
+        ente = Ente.objects.first()
+        self.assertEqual(ente.uf, 'DF')
         self.assertContains(response, self.data, status_code=201)
-
-
