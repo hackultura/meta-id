@@ -13,12 +13,33 @@ class EnteTest(APITestCase):
     def setUp(self):
 
         self.url = reverse('api:entes-list')
-        self.data = {
-            "nome": "Cicrano Beltrano",
+        self.nome = {
+            "nome": "Cicrano Beltrano"
+        }
+        self.endereco = {
             "endereco": "Av. Vladmir Herzog, 156",
             "bairro": "Jardim Botanico",
             "uf": "DF",
             "cep": "71000-000",
+        }
+        self.telefone = {
+            "telefone": [
+                {
+                    "comercial": "61 9111-1111",
+                    "adicionado_em": "01/01/2015",
+                    "valido": "True",
+                },
+                {
+                    "residencial": "61 8111-1111",
+                    "adicionado_em": "01/02/2015",
+                    "valido": "True",
+                },
+                {
+                    "comercial": "61 3111-1111",
+                    "adicionado_em": "01/12/2014",
+                    "valido": "False",
+                },
+            ]
         }
 
     def test_access_url_to_list_all_entes(self):
@@ -38,23 +59,22 @@ class EnteTest(APITestCase):
 
     def test_persist_an_ente_using_POST(self):
 
-        response = self.client.post(self.url, self.data, format='json')
+        response = self.client.post(self.url, self.nome, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Ente.objects.first().nome, 'Cicrano Beltrano')
 
     def test_persist_an_ente_returning_uuid_as_id_pub(self):
 
-        response = self.client.post(self.url, self.data, format='json')
+        response = self.client.post(self.url, self.nome, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertContains(response, 'id_pub', status_code=201)
 
     def test_persist_geographic_informantion_of_ente(self):
 
-        response = self.client.post(self.url, self.data, format='json')
+        data = self.nome
+        data.update(self.endereco)
+        response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        print(response.content)
-        ente = Ente.objects.first()
-        self.assertEqual(ente.uf, 'DF')
         response_data = dict(**response.data)
         response_data.pop('id_pub')
-        self.assertDictEqual(response_data, self.data)
+        self.assertDictEqual(response_data, data)
