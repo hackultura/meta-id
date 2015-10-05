@@ -78,3 +78,15 @@ class EnteTest(APITestCase):
         response_data = dict(**response.data)
         response_data.pop('id_pub')
         self.assertDictEqual(response_data, data)
+
+    def test_persist_a_telephone_number_of_ente(self):
+
+        data = self.nome
+        data.update(self.endereco)
+        data.update(self.telefone)
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        print(response.content)
+        response_data = dict(**response.data)
+        response_data.pop('id_pub')
+        self.assertDictEqual(response_data, data)
