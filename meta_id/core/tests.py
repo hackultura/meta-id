@@ -55,4 +55,6 @@ class EnteTest(APITestCase):
         print(response.content)
         ente = Ente.objects.first()
         self.assertEqual(ente.uf, 'DF')
-        self.assertContains(self.data, response, status_code=201)
+        response_data = dict(**response.data)
+        response_data.pop('id_pub')
+        self.assertDictEqual(response_data, self.data)
