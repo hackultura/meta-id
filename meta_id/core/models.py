@@ -12,12 +12,8 @@ from postgres.fields import JSONField
 class Ente(models.Model):
     id_pub = models.UUIDField(default=uuid.uuid4, editable=False)
     nome = models.CharField(_('Nome'), max_length=100, blank=False)
-    endereco = models.TextField(_('Endereço'), blank=True)
-    bairro = models.TextField(_('Bairro'), blank=True)
-    uf = models.TextField(_('UF'), blank=True)
-    cep = models.TextField(_('CEP'), blank=True)
+    informacoes_geograficas = JSONField(blank=True, null=True)
     telefone = JSONField(blank=True, null=True)
-
 
     class Meta:
         verbose_name = "ente"

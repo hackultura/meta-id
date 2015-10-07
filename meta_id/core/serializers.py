@@ -3,6 +3,14 @@ from rest_framework import serializers
 from .models import Ente
 
 
+class EnderecoField(serializers.JSONField):
+
+    endereco = serializers.CharField()
+    bairro = serializers.CharField()
+    uf = serializers.CharField()
+    cep = serializers.CharField()
+
+
 class TelefoneField(serializers.JSONField):
 
     adicionado_em = serializers.DateField()
@@ -14,6 +22,7 @@ class TelefoneField(serializers.JSONField):
 class EnteSerializer(serializers.ModelSerializer):
 
     id_pub = serializers.UUIDField(required=False)
+    informacoes_geograficas = EnderecoField(required=False)
     telefone = TelefoneField(required=False)
 
     class Meta:
@@ -21,9 +30,6 @@ class EnteSerializer(serializers.ModelSerializer):
         fields = (
             'id_pub',
             'nome',
-            'endereco',
-            'bairro',
-            'uf',
-            'cep',
+            'informacoes_geograficas',
             'telefone'
         )

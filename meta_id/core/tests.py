@@ -12,16 +12,28 @@ class EnteTest(APITestCase):
 
     def setUp(self):
 
+        self.maxDiff = None
+
         self.url = reverse('api:entes-list')
         self.nome = {
             "nome": "Cicrano Beltrano"
         }
         self.endereco = {
-            "endereco": "Av. Vladmir Herzog, 156",
-            "bairro": "Jardim Botanico",
-            "uf": "DF",
-            "cep": "71000-000",
+            "informacoes_geograficas": [
+                {
+                    "endereco": "Av. Vladmir Herzog, 156",
+                    "bairro": "Jardim Botanico",
+                    "uf": "DF",
+                    "cep": "71000-000",
+                    "adicionado_em": "01/01/2015",
+                    "comprovacao": {
+                        "UUID": "",
+                        "url": "",
+                    }
+                }
+            ]
         }
+
         self.telefone = {
             "telefone": [
                 {
