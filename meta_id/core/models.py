@@ -6,6 +6,8 @@ from django.core.urlresolvers import reverse
 
 from django.utils.translation import ugettext_lazy as _
 
+from postgres.fields import JSONField
+
 
 class Ente(models.Model):
     id_pub = models.UUIDField(default=uuid.uuid4, editable=False)
@@ -14,6 +16,7 @@ class Ente(models.Model):
     bairro = models.TextField(_('Bairro'), blank=True)
     uf = models.TextField(_('UF'), blank=True)
     cep = models.TextField(_('CEP'), blank=True)
+    telefone = JSONField(blank=True, null=True)
 
 
     class Meta:

@@ -77,6 +77,7 @@ class EnteTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         response_data = dict(**response.data)
         response_data.pop('id_pub')
+        response_data.pop('telefone')
         self.assertDictEqual(response_data, data)
 
     def test_persist_a_telephone_number_of_ente(self):
