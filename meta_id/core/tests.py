@@ -53,6 +53,22 @@ class EnteTest(APITestCase):
                 },
             ]
         }
+        self.atuacao = {
+            "atuacao": [
+                {
+                    "atuacao": "Criação / Desenvolvimento Artistico",
+                    "area": "Musica",
+                    "estilo": "Samba",
+                    "experiencia": "Mais de 20 anos"
+                },
+                {
+                    "atuacao": "Gestão e Pesquisa",
+                    "area": "Teatro",
+                    "estilo": "Teatro do Absurdo",
+                    "experiencia": "Mais de 10 anos"
+                }
+            ]
+        }
 
     def test_access_url_to_list_all_entes(self):
 
@@ -90,16 +106,29 @@ class EnteTest(APITestCase):
         response_data = dict(**response.data)
         response_data.pop('id_pub')
         response_data.pop('telefone')
+        response_data.pop('atuacao')
         self.assertDictEqual(response_data, data)
 
     def test_persist_a_telephone_number_of_ente(self):
 
         data = self.nome
-        data.update(self.endereco)
         data.update(self.telefone)
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        print(response.content)
         response_data = dict(**response.data)
         response_data.pop('id_pub')
+        response_data.pop('informacoes_geograficas')
+        response_data.pop('atuacao')
+        self.assertDictEqual(response_data, data)
+
+    def test_persist_experience_of_ente(self):
+
+        data = self.nome
+        data.update(self.atuacao)
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response_data = dict(**response.data)
+        response_data.pop('id_pub')
+        response_data.pop('informacoes_geograficas')
+        response_data.pop('telefone')
         self.assertDictEqual(response_data, data)

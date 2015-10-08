@@ -14,6 +14,7 @@ class Ente(models.Model):
     nome = models.CharField(_('Nome'), max_length=100, blank=False)
     informacoes_geograficas = JSONField(blank=True, null=True)
     telefone = JSONField(blank=True, null=True)
+    atuacao = JSONField(blank=True, null=True)
 
     class Meta:
         verbose_name = "ente"
