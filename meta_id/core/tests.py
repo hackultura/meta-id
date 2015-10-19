@@ -1,4 +1,9 @@
+# -*- coding: utf-8 -*-
+
+import datetime
+from mock import patch
 from django.core.urlresolvers import reverse
+from django.utils import timezone
 
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -13,46 +18,45 @@ class EnteTest(APITestCase):
     def setUp(self):
 
         self.maxDiff = None
+        self.date_now = datetime.datetime(2015, 10, 19, 17, 16)
 
-        self.url = reverse('api:entes-list')
+        self.url = reverse('api:entes')
         self.nome = {
             "nome": "Cicrano Beltrano"
         }
-        self.endereco = {
-            "informacoes_geograficas": [
-                {
-                    "endereco": "Av. Vladmir Herzog, 156",
-                    "bairro": "Jardim Botanico",
-                    "uf": "DF",
-                    "cep": "71000-000",
-                    "adicionado_em": "01/01/2015",
-                    "comprovacao": {
-                        "UUID": "",
-                        "url": "",
-                    }
-                }
-            ]
-        }
 
-        self.telefone = {
-            "telefone": [
-                {
-                    "comercial": "61 9111-1111",
-                    "adicionado_em": "01/01/2015",
-                    "valido": "True",
-                },
-                {
-                    "residencial": "61 8111-1111",
-                    "adicionado_em": "01/02/2015",
-                    "valido": "True",
-                },
-                {
-                    "comercial": "61 3111-1111",
-                    "adicionado_em": "01/12/2014",
-                    "valido": "False",
-                },
-            ]
-        }
+        with patch.object(timezone, 'now', return_value=self.date_now) as mock_now:
+            self.endereco = {
+                "informacoes_geograficas": [
+                    {
+                        "endereco": "Av. Vladmir Herzog, 156",
+                        "bairro": "Jardim Botanico",
+                        "uf": "DF",
+                        "cep": "71000-000",
+                        "adicionado_em": timezone.now()
+                    }
+                ]
+            }
+
+            self.telefone = {
+                "telefone": [
+                    {
+                        "comercial": "61 9111-1111",
+                        "adicionado_em": timezone.now(),
+                        "valido": True,
+                    },
+                    {
+                        "residencial": "61 8111-1111",
+                        "adicionado_em": timezone.now(),
+                        "valido": True,
+                    },
+                    {
+                        "comercial": "61 3111-1111",
+                        "adicionado_em": timezone.now(),
+                        "valido": True,
+                    },
+                ]
+            }
 
     def test_access_url_to_list_all_entes(self):
 
@@ -83,25 +87,26 @@ class EnteTest(APITestCase):
 
     def test_persist_geographic_informantion_of_ente(self):
 
-        data = self.nome
-        data.update(self.endereco)
-        response = self.client.post(self.url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        response_data = dict(**response.data)
-        response_data.pop('id_pub')
-        response_data.pop('telefone')
-        self.assertDictEqual(response_data, data)
+        with patch.object(timezone, 'now', return_value=self.date_now) as mock_now:
+            data = self.nome
+            data.update(self.endereco)
+            response = self.client.post(self.url, data, format='json')
+            self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+            response_data = dict(**response.data)
+            response_data.pop('id_pub')
+            response_data.pop('telefone')
+            self.assertDictEqual(response_data, data)
 
     def test_persist_a_telephone_number_of_ente(self):
-
-        data = self.nome
-        data.update(self.telefone)
-        response = self.client.post(self.url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        response_data = dict(**response.data)
-        response_data.pop('id_pub')
-        response_data.pop('informacoes_geograficas')
-        self.assertDictEqual(response_data, data)
+        with patch.object(timezone, 'now', return_value=self.date_now) as mock_now:
+            data = self.nome
+            data.update(self.telefone)
+            response = self.client.post(self.url, data, format='json')
+            self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+            response_data = dict(**response.data)
+            response_data.pop('id_pub')
+            response_data.pop('informacoes_geograficas')
+            self.assertDictEqual(response_data, data)
 
 
 class ClassificacoesTest(APITestCase):

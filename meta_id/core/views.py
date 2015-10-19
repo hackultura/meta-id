@@ -3,13 +3,15 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .serializers import EnteSerializer, ClassificacaoSerializer
-from .models import ClassificacaoArtistica
+from .models import Ente, ClassificacaoArtistica
 
 
-class EnteListView(APIView):
+class EnteView(APIView):
 
     def get(self, *args):
-        return Response(status=200)
+        entes = Ente.objects.all()
+        serializer = EnteSerializer(entes, many=True)
+        return Response(serializer.data)
 
     def post(self, request):
         serializer = EnteSerializer(data=request.data)

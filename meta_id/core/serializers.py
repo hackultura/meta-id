@@ -1,14 +1,14 @@
 from rest_framework import serializers
 
 from .models import Ente, ClassificacaoArtistica
-from .fields import JSONField
+from .fields import EnderecoField, TelefoneField
 
 
 class EnteSerializer(serializers.ModelSerializer):
 
     id_pub = serializers.UUIDField(required=False)
-    informacoes_geograficas = JSONField(required=False)
-    telefone = JSONField(required=False)
+    informacoes_geograficas = EnderecoField(required=False)
+    telefone = TelefoneField(required=False)
 
     class Meta:
         model = Ente

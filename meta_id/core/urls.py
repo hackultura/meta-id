@@ -1,9 +1,9 @@
 from django.conf.urls import url
 
-from .views import EnteListView, ClassificacoesListView
+from .views import EnteView, ClassificacoesListView
 
 urlpatterns = [
-    url(r'^entes/$', EnteListView.as_view(), name='entes-list'),
+    url(r'^entes/$', EnteView.as_view(), name='entes'),
     url(r'^perfis/classificacoes/$', ClassificacoesListView.as_view(),
         name='classificacoes-list'),
 ]
