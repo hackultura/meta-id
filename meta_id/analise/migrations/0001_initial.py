@@ -2,28 +2,28 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import django.core.serializers.json
 import decimal
-from django.conf import settings
 import postgres.fields
+import django.core.serializers.json
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('core', '0001_initial'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
             name='Parecer',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', primary_key=True, serialize=False, auto_created=True)),
+                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
                 ('texto_parecer', models.TextField(verbose_name='Parecer')),
-                ('decisao', models.IntegerField(max_length=1, choices=[(1, 'Favorável'), (2, 'Em Diligência'), (3, 'Desfavorável')], verbose_name='Decisão do parecerista')),
+                ('decisao', models.IntegerField(choices=[(1, 'Favorável'), (2, 'Em Diligência'), (3, 'Desfavorável')], max_length=1, verbose_name='Decisão do parecerista')),
                 ('data_decisao', models.DateField(verbose_name='Data da Decisão')),
-                ('areas_atuacao', postgres.fields.JSONField(encode_kwargs={'cls': django.core.serializers.json.DjangoJSONEncoder}, decode_kwargs={'parse_float': decimal.Decimal}, verbose_name='Áreas de Atuação')),
+                ('areas_atuacao', postgres.fields.JSONField(decode_kwargs={'parse_float': decimal.Decimal}, encode_kwargs={'cls': django.core.serializers.json.DjangoJSONEncoder}, verbose_name='Áreas de Atuação')),
             ],
             options={
                 'verbose_name_plural': 'analises',
@@ -33,9 +33,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Pedido',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', primary_key=True, serialize=False, auto_created=True)),
+                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
                 ('data_pedido', models.DateField(verbose_name='Data do Pedido')),
-                ('areas_atuacao', postgres.fields.JSONField(encode_kwargs={'cls': django.core.serializers.json.DjangoJSONEncoder}, decode_kwargs={'parse_float': decimal.Decimal}, verbose_name='Áreas de Atuação')),
+                ('areas_atuacao', postgres.fields.JSONField(decode_kwargs={'parse_float': decimal.Decimal}, encode_kwargs={'cls': django.core.serializers.json.DjangoJSONEncoder}, verbose_name='Áreas de Atuação')),
                 ('ente', models.ForeignKey(to='core.Ente')),
             ],
             options={
@@ -51,6 +51,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='parecer',
             name='responsavel',
-            field=models.ForeignKey(null=True, to=settings.AUTH_USER_MODEL, blank=True),
+            field=models.ForeignKey(blank=True, null=True, to=settings.AUTH_USER_MODEL),
         ),
     ]

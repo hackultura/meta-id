@@ -1,38 +1,14 @@
 from rest_framework import serializers
 
-from .models import Ente
-
-
-class EnderecoField(serializers.JSONField):
-
-    endereco = serializers.CharField()
-    bairro = serializers.CharField()
-    uf = serializers.CharField()
-    cep = serializers.CharField()
-
-
-class TelefoneField(serializers.JSONField):
-
-    adicionado_em = serializers.DateField()
-    valido = serializers.BooleanField()
-    publico = serializers.BooleanField()
-    numero = serializers.IntegerField()
-
-
-class AtuacaoField(serializers.JSONField):
-
-    atuacao = serializers.CharField()
-    area = serializers.CharField()
-    estilo = serializers.CharField()
-    experiencia = serializers.CharField()
+from .models import Ente, ClassificacaoArtistica
+from .fields import JSONField
 
 
 class EnteSerializer(serializers.ModelSerializer):
 
     id_pub = serializers.UUIDField(required=False)
-    informacoes_geograficas = EnderecoField(required=False)
-    telefone = TelefoneField(required=False)
-    atuacao = AtuacaoField(required=False)
+    informacoes_geograficas = JSONField(required=False)
+    telefone = JSONField(required=False)
 
     class Meta:
         model = Ente
@@ -41,5 +17,10 @@ class EnteSerializer(serializers.ModelSerializer):
             'nome',
             'informacoes_geograficas',
             'telefone',
-            'atuacao'
         )
+
+
+class ClassificacaoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClassificacaoArtistica
+        fields = ("area", "estilos",)
