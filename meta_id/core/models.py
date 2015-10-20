@@ -37,12 +37,14 @@ class PerfilArtistico(models.Model):
     )
 
     ente = models.ForeignKey('Ente', related_name="perfis")
+    nome = models.CharField(_(u"Nome Artístico"), max_length=60)
     atuacao = models.CharField(_(u"Atuação Cultural"), max_length=35,
                                choices=ATUACAO_CHOICES)
     classificacao = JSONField()
     experiencia = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(1)]
     )
+    historico = models.CharField(_(u"Breve Histórico"), max_length=255)
 
 
 class ClassificacaoArtistica(models.Model):

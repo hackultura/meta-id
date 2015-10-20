@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+import json
 from mock import patch
 from django.core.urlresolvers import reverse
 from django.utils import timezone
@@ -10,7 +11,7 @@ from rest_framework.test import APITestCase
 
 from model_mommy import mommy
 
-from .models import Ente, ClassificacaoArtistica
+from .models import Ente, ClassificacaoArtistica, PerfilArtistico
 
 
 class EnteTest(APITestCase):
@@ -121,9 +122,77 @@ class ClassificacoesTest(APITestCase):
     def test_should_get_areas(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, [
+        # Como content retorna em bytes e o data em OrderedDict, foi
+        # necessario efetuar esse decode
+        # Isso foi alterado na versão 3.x do Django Rest Framework
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response_data, [
             {
                 "area": "Artes Visuais",
                 "estilos": ["Exposicao de artes em geral"]
             }
         ])
+
+
+class PerfilArtisticoTest(APITestCase):
+    def setUp(self):
+        self.ente = mommy.make(Ente, nome="Fulano Cicrano")
+        self.classificacao = {"area": "Artes Visuais",
+                              "estilo": "Exposicoes em geral"}
+        PerfilArtistico.objects.create(
+            nome="Cantor Fulano",
+            ente=self.ente,
+            atuacao=PerfilArtistico.ATUACAO_CHOICES.gestao,
+            classificacao=self.classificacao,
+            experiencia=2,
+            historico="Breve Historico"
+        )
+        self.url = reverse('api:perfis', kwargs={'uid': self.ente.id_pub})
+
+
+    def test_should_get_profiles(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Como content retorna em bytes e o data em OrderedDict, foi
+        # necessario efetuar esse decode
+        # Isso foi alterado na versão 3.x do Django Rest Framework
+        response_data = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response_data, [
+            {
+                "nome": "Cantor Fulano",
+                "tipo_atuacao": "Gestão",
+                "classificacao": {
+                    "area": "Artes Visuais",
+                    "estilo": "Exposicoes em geral"
+                },
+                "tempo_experiencia": "2 Anos",
+                "historico": "Breve Historico"
+            }
+        ])
+
+    def test_should_post_profile(self):
+        data = {
+            "nome": "Tocador Fulano",
+            "atuacao": "producao",
+            "classificacao": {
+                "area": "Música",
+                "estilo": "Rock Nacional"
+            },
+            "experiencia": 4,
+            "historico": "Breve Historico"
+        }
+
+        output_data = {
+            "nome": "Tocador Fulano",
+            "tipo_atuacao": "Produção",
+            "classificacao": {
+                "area": "Música",
+                "estilo": "Rock Nacional"
+            },
+            "tempo_experiencia": "4 Anos",
+            "historico": "Breve Historico"
+        }
+
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertDictEqual(response.data, output_data)

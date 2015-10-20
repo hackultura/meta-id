@@ -30,7 +30,7 @@ class Parecer(models.Model):
     pedido = models.ForeignKey(Pedido)
     responsavel = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     texto_parecer = models.TextField(_('Parecer'))
-    decisao = models.IntegerField(_('Decisão do parecerista'), max_length=1, choices=DECISAO_ANALISE)
+    decisao = models.IntegerField(_('Decisão do parecerista'), choices=DECISAO_ANALISE)
     data_decisao = models.DateField(_('Data da Decisão'))
     areas_atuacao = fields.JSONField(_('Áreas de Atuação'))
 

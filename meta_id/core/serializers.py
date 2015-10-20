@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Ente, ClassificacaoArtistica
+from .models import Ente, ClassificacaoArtistica, PerfilArtistico
 from .fields import EnderecoField, TelefoneField
 
 
@@ -18,6 +18,40 @@ class EnteSerializer(serializers.ModelSerializer):
             'informacoes_geograficas',
             'telefone',
         )
+
+
+class PerfilArtisticoSerializer(serializers.ModelSerializer):
+    tipo_atuacao = serializers.SerializerMethodField()
+    atuacao = serializers.ChoiceField(
+        choices=PerfilArtistico.ATUACAO_CHOICES,
+        write_only=True
+    )
+    tempo_experiencia = serializers.SerializerMethodField()
+    classificacao = serializers.JSONField()
+    class Meta:
+        model = PerfilArtistico
+        fields = (
+            "nome",
+            "atuacao",
+            "tipo_atuacao",
+            "classificacao",
+            "experiencia",
+            "tempo_experiencia",
+            "historico",
+        )
+        read_only_fields = ("tipo_atuacao", "tempo_experiencia",)
+        extra_kwargs = {
+            'experiencia': {'write_only': True}
+        }
+
+    def get_tipo_atuacao(self, obj):
+        return obj.get_atuacao_display()
+
+    def get_tempo_experiencia(self, obj):
+            if obj.experiencia > 1:
+                return "{0} Anos".format(obj.experiencia)
+            else:
+                return "{0} Ano".format(obj.experiencia)
 
 
 class ClassificacaoSerializer(serializers.ModelSerializer):
