@@ -25,6 +25,13 @@ class EnteView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class EnteDetailView(APIView):
+    def get(self, request, uid):
+        ente = Ente.objects.get(id_pub=uid)
+        serializer = EnteSerializer(ente)
+        return Response(serializer.data)
+
+
 class ClassificacoesListView(APIView):
     def get(self, *args):
         classificacoes = ClassificacaoArtistica.objects.all()

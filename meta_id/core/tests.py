@@ -109,6 +109,12 @@ class EnteTest(APITestCase):
             response_data.pop('informacoes_geograficas')
             self.assertDictEqual(response_data, data)
 
+    def test_should_retrieve_a_ente(self):
+        ente = mommy.make(Ente, nome="Fulano Cicrano")
+        url = reverse('api:entes-detail', kwargs={'uid': ente.id_pub})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 
 class ClassificacoesTest(APITestCase):
     def setUp(self):
