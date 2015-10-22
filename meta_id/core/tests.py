@@ -161,7 +161,7 @@ class PerfilArtisticoTest(APITestCase):
         self.ente = mommy.make(Ente, nome="Fulano Cicrano")
         self.classificacao = {"area": "Artes Visuais",
                               "estilo": "Exposicoes em geral"}
-        PerfilArtistico.objects.create(
+        self.perfil = PerfilArtistico.objects.create(
             nome="Cantor Fulano",
             ente=self.ente,
             atuacao=PerfilArtistico.ATUACAO_CHOICES.gestao,
@@ -218,3 +218,34 @@ class PerfilArtisticoTest(APITestCase):
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertDictEqual(response.data, output_data)
+
+    def test_should_retrieve_profile(self):
+        output_data = {
+            "nome": "Cantor Fulano",
+            "tipo_atuacao": "Gestão",
+            "classificacao": {
+                "area": "Artes Visuais",
+                "estilo": "Exposicoes em geral"
+            },
+            "tempo_experiencia": "2 Anos",
+            "historico": "Breve Historico"
+        }
+        url = reverse('api:perfis-detail', kwargs={'uid': self.perfil.id_pub})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, output_data)
+
+    def test_should_update_profile(self):
+        url = reverse('api:perfis-detail', kwargs={'uid': self.perfil.id_pub})
+        response = self.client.get(url)
+
+        # Tratando resposta e retirando campos somente para leitura
+        data = json.loads(response.content.decode('utf-8'))
+        data.pop('tipo_atuacao')
+        data.pop('tempo_experiencia')
+
+        data["nome"] = "Perfil Alterado"
+        data["atuacao"] = "producao"
+        data["experiencia"] = 2
+        response = self.client.put(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

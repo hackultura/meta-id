@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 import uuid
-# from django.conf import settings
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
+from django_extensions.db.fields import AutoSlugField
 from postgres.fields import JSONField
 from model_utils import Choices
 
@@ -12,6 +13,7 @@ from model_utils import Choices
 class Ente(models.Model):
     id_pub = models.UUIDField(default=uuid.uuid4, editable=False)
     nome = models.CharField(_('Nome'), max_length=100, blank=False)
+    slug = AutoSlugField(populate_from='nome', overwrite=True)
     informacoes_geograficas = JSONField(blank=True, null=True)
     telefone = JSONField(blank=True, null=True)
 
@@ -36,8 +38,10 @@ class PerfilArtistico(models.Model):
         ("suporte", _(u"Suporte Técnico")),
     )
 
+    id_pub = models.UUIDField(default=uuid.uuid4, editable=False)
     ente = models.ForeignKey('Ente', related_name="perfis")
     nome = models.CharField(_(u"Nome Artístico"), max_length=60)
+    slug = AutoSlugField(populate_from='nome', overwrite=True)
     atuacao = models.CharField(_(u"Atuação Cultural"), max_length=35,
                                choices=ATUACAO_CHOICES)
     classificacao = JSONField()

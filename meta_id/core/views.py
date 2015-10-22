@@ -63,3 +63,19 @@ class PerfilArtisticoView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class PerfilArtisticoDetailView(APIView):
+    def get(self, request, uid):
+        perfil = PerfilArtistico.objects.get(id_pub=uid)
+        serializer = PerfilArtisticoSerializer(perfil)
+        return Response(serializer.data)
+
+    def put(self, request, uid):
+        perfil = PerfilArtistico.objects.get(id_pub=uid)
+        serializer = PerfilArtisticoSerializer(perfil, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        import ipdb; ipdb.set_trace()
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
