@@ -10,7 +10,10 @@ class EnderecoField(serializers.JSONField):
     def to_internal_value(self, data):
         validated_data = []
 
+
         for item in data:
+            if isinstance(item, str):
+                continue
             if item.get('endereco') in [None, ""]:
                 msg = u"Insira todo o endereço corretamente."
                 raise serializers.ValidationError(msg)
@@ -38,6 +41,8 @@ class TelefoneField(serializers.JSONField):
         validated_data = []
 
         for item in data:
+            if isinstance(item, str):
+                continue
             item["valido"] = True
             item["adicionado_em"] = timezone.now()
             validated_data.append(item)

@@ -80,6 +80,22 @@ class EnteTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Ente.objects.first().nome, 'Cicrano Beltrano')
 
+    def test_update_an_ente_using_PUT(self):
+        ente = mommy.make(
+            Ente, nome="Fulano Cicrano",
+            informacoes_geograficas=self.endereco,
+            telefone=self.telefone
+        )
+
+
+        url = reverse('api:entes-detail', kwargs={'uid': ente.id_pub})
+        response = self.client.get(self.url)
+        data = json.loads(response.content.decode('utf-8'))[0]
+        data["nome"] = "Nome Alterado"
+
+        response = self.client.put(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_persist_an_ente_returning_uuid_as_id_pub(self):
 
         response = self.client.post(self.url, self.nome, format='json')
