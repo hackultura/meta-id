@@ -14,13 +14,16 @@ class EnteSerializer(serializers.ModelSerializer):
         model = Ente
         fields = (
             'id_pub',
+            'slug',
             'nome',
             'informacoes_geograficas',
             'telefone',
         )
+        read_only_fields = ('slug')
 
 
 class PerfilArtisticoSerializer(serializers.ModelSerializer):
+    id_pub = serializers.UUIDField(required=False)
     tipo_atuacao = serializers.SerializerMethodField()
     atuacao = serializers.ChoiceField(
         choices=PerfilArtistico.ATUACAO_CHOICES,
@@ -31,6 +34,8 @@ class PerfilArtisticoSerializer(serializers.ModelSerializer):
     class Meta:
         model = PerfilArtistico
         fields = (
+            "id_pub",
+            "slug",
             "nome",
             "atuacao",
             "tipo_atuacao",
@@ -39,7 +44,8 @@ class PerfilArtisticoSerializer(serializers.ModelSerializer):
             "tempo_experiencia",
             "historico",
         )
-        read_only_fields = ("tipo_atuacao", "tempo_experiencia",)
+        read_only_fields = ("id_pub", "slug", "tipo_atuacao",
+                            "tempo_experiencia",)
         extra_kwargs = {
             'experiencia': {'write_only': True}
         }

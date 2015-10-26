@@ -23,6 +23,7 @@ class EnteTest(APITestCase):
 
         self.url = reverse('api:entes')
         self.nome = {
+            "slug": "cicrano-beltrano",
             "nome": "Cicrano Beltrano"
         }
 
@@ -88,7 +89,7 @@ class EnteTest(APITestCase):
         )
 
 
-        url = reverse('api:entes-detail', kwargs={'uid': ente.id_pub})
+        url = reverse('api:entes-detail', kwargs={'slug': ente.slug})
         response = self.client.get(self.url)
         data = json.loads(response.content.decode('utf-8'))[0]
         data["nome"] = "Nome Alterado"
@@ -127,7 +128,7 @@ class EnteTest(APITestCase):
 
     def test_should_retrieve_a_ente(self):
         ente = mommy.make(Ente, nome="Fulano Cicrano")
-        url = reverse('api:entes-detail', kwargs={'uid': ente.id_pub})
+        url = reverse('api:entes-detail', kwargs={'slug': ente.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -169,7 +170,7 @@ class PerfilArtisticoTest(APITestCase):
             experiencia=2,
             historico="Breve Historico"
         )
-        self.url = reverse('api:perfis', kwargs={'uid': self.ente.id_pub})
+        self.url = reverse('api:perfis', kwargs={'slug': self.ente.slug})
 
 
     def test_should_get_profiles(self):
@@ -179,8 +180,10 @@ class PerfilArtisticoTest(APITestCase):
         # necessario efetuar esse decode
         # Isso foi alterado na versão 3.x do Django Rest Framework
         response_data = json.loads(response.content.decode('utf-8'))
+        response_data[0].pop("id_pub")
         self.assertEqual(response_data, [
             {
+                "slug": "cantor-fulano",
                 "nome": "Cantor Fulano",
                 "tipo_atuacao": "Gestão",
                 "classificacao": {
@@ -205,6 +208,7 @@ class PerfilArtisticoTest(APITestCase):
         }
 
         output_data = {
+            "slug": "tocador-fulano",
             "nome": "Tocador Fulano",
             "tipo_atuacao": "Produção",
             "classificacao": {
@@ -217,10 +221,12 @@ class PerfilArtisticoTest(APITestCase):
 
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response.data.pop("id_pub")
         self.assertDictEqual(response.data, output_data)
 
     def test_should_retrieve_profile(self):
         output_data = {
+            "slug": "cantor-fulano",
             "nome": "Cantor Fulano",
             "tipo_atuacao": "Gestão",
             "classificacao": {
@@ -230,13 +236,14 @@ class PerfilArtisticoTest(APITestCase):
             "tempo_experiencia": "2 Anos",
             "historico": "Breve Historico"
         }
-        url = reverse('api:perfis-detail', kwargs={'uid': self.perfil.id_pub})
+        url = reverse('api:perfis-detail', kwargs={'slug': self.perfil.slug})
         response = self.client.get(url)
+        response.data.pop("id_pub")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, output_data)
 
     def test_should_update_profile(self):
-        url = reverse('api:perfis-detail', kwargs={'uid': self.perfil.id_pub})
+        url = reverse('api:perfis-detail', kwargs={'slug': self.perfil.slug})
         response = self.client.get(url)
 
         # Tratando resposta e retirando campos somente para leitura

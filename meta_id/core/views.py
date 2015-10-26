@@ -26,13 +26,13 @@ class EnteView(APIView):
 
 
 class EnteDetailView(APIView):
-    def get(self, request, uid):
-        ente = Ente.objects.get(id_pub=uid)
+    def get(self, request, slug):
+        ente = Ente.objects.get(slug=slug)
         serializer = EnteSerializer(ente)
         return Response(serializer.data)
 
-    def put(self, request, uid):
-        ente = Ente.objects.get(id_pub=uid)
+    def put(self, request, slug):
+        ente = Ente.objects.get(slug=slug)
         serializer = EnteSerializer(ente, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -41,21 +41,21 @@ class EnteDetailView(APIView):
 
 
 class ClassificacoesListView(APIView):
-    def get(self, *args):
+    def get(self, request):
         classificacoes = ClassificacaoArtistica.objects.all()
         serializer = ClassificacaoSerializer(classificacoes, many=True)
         return Response(serializer.data)
 
 
 class PerfilArtisticoView(APIView):
-    def get(self, request, uid):
-        ente = Ente.objects.get(id_pub=uid)
+    def get(self, request, slug):
+        ente = Ente.objects.get(slug=slug)
         perfis = PerfilArtistico.objects.filter(ente=ente)
         serializer = PerfilArtisticoSerializer(perfis, many=True)
         return Response(serializer.data)
 
-    def post(self, request, uid):
-        ente = Ente.objects.get(id_pub=uid)
+    def post(self, request, slug):
+        ente = Ente.objects.get(slug=slug)
         serializer = PerfilArtisticoSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(ente=ente)
@@ -64,18 +64,17 @@ class PerfilArtisticoView(APIView):
 
 
 class PerfilArtisticoDetailView(APIView):
-    def get(self, request, uid):
-        perfil = PerfilArtistico.objects.get(id_pub=uid)
+    def get(self, request, slug):
+        perfil = PerfilArtistico.objects.get(slug=slug)
         serializer = PerfilArtisticoSerializer(perfil)
         return Response(serializer.data)
 
-    def put(self, request, uid):
-        perfil = PerfilArtistico.objects.get(id_pub=uid)
+    def put(self, request, slug):
+        perfil = PerfilArtistico.objects.get(slug=slug)
         serializer = PerfilArtisticoSerializer(perfil, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        import ipdb; ipdb.set_trace()
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
