@@ -33,6 +33,7 @@ class EnteTest(APITestCase):
                     {
                         "endereco": "Av. Vladmir Herzog, 156",
                         "bairro": "Jardim Botanico",
+                        "cidade": "Sudoeste",
                         "uf": "DF",
                         "cep": "71000-000",
                         "adicionado_em": timezone.now()
@@ -58,6 +59,12 @@ class EnteTest(APITestCase):
                         "valido": True,
                     },
                 ]
+            }
+
+            self.dados_pessoais = {
+                "email": "fulano.cicrano@mail.com",
+                "cpf": "019.012.100-11",
+                "nascimento": "01/07/1984"
             }
 
     def test_access_url_to_list_all_entes(self):
@@ -87,7 +94,6 @@ class EnteTest(APITestCase):
             informacoes_geograficas=self.endereco,
             telefone=self.telefone
         )
-
 
         url = reverse('api:entes-detail', kwargs={'slug': ente.slug})
         response = self.client.get(self.url)

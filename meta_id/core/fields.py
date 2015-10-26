@@ -17,6 +17,9 @@ class EnderecoField(serializers.JSONField):
             if item.get('endereco') in [None, ""]:
                 msg = u"Insira todo o endereço corretamente."
                 raise serializers.ValidationError(msg)
+            if item.get('cidade') in [None, ""]:
+                msg = u"Insira o nome da sua cidade."
+                raise serializers.ValidationError(msg)
             if item.get('uf') in [None, ""]:
                 msg = u"Insira a unidade federativa."
                 raise serializers.ValidationError(msg)

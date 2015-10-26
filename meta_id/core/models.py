@@ -16,6 +16,7 @@ class Ente(models.Model):
     slug = AutoSlugField(populate_from='nome', overwrite=True)
     informacoes_geograficas = JSONField(blank=True, null=True)
     telefone = JSONField(blank=True, null=True)
+    email = models.EmailField(_(u"E-mail"), blank=False)
 
     class Meta:
         verbose_name = "ente"

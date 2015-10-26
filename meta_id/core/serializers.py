@@ -18,6 +18,7 @@ class EnteSerializer(serializers.ModelSerializer):
             'nome',
             'informacoes_geograficas',
             'telefone',
+            'email',
         )
         read_only_fields = ('slug')
 
