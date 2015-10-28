@@ -15,6 +15,8 @@ import os
 
 import dj_database_url
 
+#from django.conf.global_settings import DATE_INPUT_FORMATS
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -93,7 +95,7 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
-LANGUAGE_CODE = 'pt-br'
+LANGUAGE_CODE = 'pt_BR'
 
 TIME_ZONE = 'America/Sao_Paulo'
 
@@ -103,8 +105,19 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Django Rest Framework
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+    ),
+    'DATE_FORMAT': "%d/%m/%Y",
+    'DATE_INPUT_FORMATS':["%d/%m/%Y", "%d/%m/%y"]
+}

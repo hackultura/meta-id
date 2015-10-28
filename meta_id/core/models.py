@@ -17,6 +17,7 @@ class Ente(models.Model):
     informacoes_geograficas = JSONField(blank=True, null=True)
     telefone = JSONField(blank=True, null=True)
     email = models.EmailField(_(u"E-mail"), blank=False)
+    nascimento = models.DateField()
 
     class Meta:
         verbose_name = "ente"

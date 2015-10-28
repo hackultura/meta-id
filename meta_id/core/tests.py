@@ -63,7 +63,7 @@ class EnteTest(APITestCase):
 
             self.dados_pessoais = {
                 "email": "fulano.cicrano@mail.com",
-                "cpf": "019.012.100-11",
+                #"cpf": "019.012.100-11",
                 "nascimento": "01/07/1984"
             }
 
@@ -84,15 +84,25 @@ class EnteTest(APITestCase):
 
     def test_persist_an_ente_using_POST(self):
 
-        response = self.client.post(self.url, self.nome, format='json')
+        data = {}
+        data.update(self.nome)
+        data.update(self.dados_pessoais)
+        response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Ente.objects.first().nome, 'Cicrano Beltrano')
 
     def test_update_an_ente_using_PUT(self):
+        from datetime import datetime
+        nascimento_date = datetime.strptime(
+            self.dados_pessoais.get("nascimento"),
+            "%d/%m/%Y"
+        )
         ente = mommy.make(
             Ente, nome="Fulano Cicrano",
             informacoes_geograficas=self.endereco,
-            telefone=self.telefone
+            telefone=self.telefone,
+            email=self.dados_pessoais.get("email"),
+            nascimento=nascimento_date
         )
 
         url = reverse('api:entes-detail', kwargs={'slug': ente.slug})
@@ -105,7 +115,10 @@ class EnteTest(APITestCase):
 
     def test_persist_an_ente_returning_uuid_as_id_pub(self):
 
-        response = self.client.post(self.url, self.nome, format='json')
+        data = {}
+        data.update(self.nome)
+        data.update(self.dados_pessoais)
+        response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertContains(response, 'id_pub', status_code=201)
 
@@ -114,6 +127,7 @@ class EnteTest(APITestCase):
         with patch.object(timezone, 'now', return_value=self.date_now) as mock_now:
             data = self.nome
             data.update(self.endereco)
+            data.update(self.dados_pessoais)
             response = self.client.post(self.url, data, format='json')
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
             response_data = dict(**response.data)
@@ -125,6 +139,7 @@ class EnteTest(APITestCase):
         with patch.object(timezone, 'now', return_value=self.date_now) as mock_now:
             data = self.nome
             data.update(self.telefone)
+            data.update(self.dados_pessoais)
             response = self.client.post(self.url, data, format='json')
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
             response_data = dict(**response.data)

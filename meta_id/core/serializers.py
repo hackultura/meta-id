@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from rest_framework import serializers
 
 from .models import Ente, ClassificacaoArtistica, PerfilArtistico
@@ -9,7 +11,7 @@ class EnteSerializer(serializers.ModelSerializer):
     id_pub = serializers.UUIDField(required=False)
     informacoes_geograficas = EnderecoField(required=False)
     telefone = TelefoneField(required=False)
-
+    nascimento = serializers.DateField()
     class Meta:
         model = Ente
         fields = (
@@ -19,6 +21,7 @@ class EnteSerializer(serializers.ModelSerializer):
             'informacoes_geograficas',
             'telefone',
             'email',
+            'nascimento',
         )
         read_only_fields = ('slug')
 
