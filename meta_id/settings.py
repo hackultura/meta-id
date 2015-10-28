@@ -56,6 +56,7 @@ INSTALLED_APPS = (
 
     'django_extensions',
     'rest_framework',
+    'rest_localflavor',
     'debug_toolbar',
     'test_without_migrations',
 
