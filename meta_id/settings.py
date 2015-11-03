@@ -122,3 +122,8 @@ REST_FRAMEWORK = {
     'DATE_FORMAT': "%d/%m/%Y",
     'DATE_INPUT_FORMATS':["%d/%m/%Y", "%d/%m/%y"]
 }
+
+# Model Mommy
+MOMMY_CUSTOM_FIELDS_GEN = {
+    'postgres.fields.json_field.JSONField': 'meta_id.test.model_mommy.fields.generate_json_value',
+}

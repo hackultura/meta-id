@@ -51,3 +51,27 @@ class TelefoneField(serializers.JSONField):
             validated_data.append(item)
 
         return validated_data
+
+
+class ClassificacoesField(serializers.JSONField):
+    def to_internal_value(self, data):
+        validated_data = []
+
+
+        for item in data:
+            if isinstance(item, str):
+                continue
+            if item.get('atuacao') in [None, ""]:
+                msg = u"Insira uma atuação correta."
+                raise serializers.ValidationError(msg)
+            if item.get('area') in [None, ""]:
+                msg = u"Escolha uma das áreas disponiveis."
+                raise serializers.ValidationError(msg)
+            if item.get('estilo') in [None, ""]:
+                msg = u"Escolha um dos estilos disponíveis."
+                raise serializers.ValidationError(msg)
+            if item.get('experiencia') in [None, ""]:
+                msg = u"Insira o seu tempo de experiência."
+                raise serializers.ValidationError(msg)
+
+        return data

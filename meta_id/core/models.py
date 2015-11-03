@@ -11,13 +11,26 @@ from model_utils import Choices
 
 
 class Ente(models.Model):
+
+    ATUACAO_CHOICES = Choices(
+        ("gestao", _(u"Gestão")),
+        ("pesquisa", _(u"Pesquisa")),
+        ("facilitacao_formacao", _(u"Facilitação/Formação")),
+        ("producao", _(u"Produção")),
+        ("criacao_desenv", _(u"Criação/Desenvolvimento Artístico")),
+        ("suporte", _(u"Suporte Técnico")),
+    )
+
     id_pub = models.UUIDField(default=uuid.uuid4, editable=False)
     nome = models.CharField(_('Nome'), max_length=100, blank=False)
     slug = AutoSlugField(populate_from='nome', overwrite=True)
     informacoes_geograficas = JSONField(blank=True, null=True)
     telefone = JSONField(blank=True, null=True)
     email = models.EmailField(_(u"E-mail"), blank=False)
+    cpf = models.CharField(_(u"CPF"), max_length=15, blank=False)
     nascimento = models.DateField()
+    classificacoes = JSONField()
+
 
     class Meta:
         verbose_name = "ente"
@@ -31,25 +44,10 @@ class Ente(models.Model):
 
 
 class PerfilArtistico(models.Model):
-    ATUACAO_CHOICES = Choices(
-        ("gestao", _(u"Gestão")),
-        ("pesquisa", _(u"Pesquisa")),
-        ("facilitacao_formacao", _(u"Facilitação/Formação")),
-        ("producao", _(u"Produção")),
-        ("criacao_desenv", _(u"Criação/Desenvolvimento Artístico")),
-        ("suporte", _(u"Suporte Técnico")),
-    )
-
     id_pub = models.UUIDField(default=uuid.uuid4, editable=False)
     ente = models.ForeignKey('Ente', related_name="perfis")
     nome = models.CharField(_(u"Nome Artístico"), max_length=60)
     slug = AutoSlugField(populate_from='nome', overwrite=True)
-    atuacao = models.CharField(_(u"Atuação Cultural"), max_length=35,
-                               choices=ATUACAO_CHOICES)
-    classificacao = JSONField()
-    experiencia = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1)]
-    )
     historico = models.CharField(_(u"Breve Histórico"), max_length=255)
 
 

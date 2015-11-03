@@ -63,9 +63,22 @@ class EnteTest(APITestCase):
 
             self.dados_pessoais = {
                 "email": "fulano.cicrano@mail.com",
-                #"cpf": "019.012.100-11",
+                "cpf": "019.012.100-11",
                 "nascimento": "01/07/1984"
             }
+
+            self.classificacoes = [
+                {
+                    "atuacao": "Produção",
+                    "area": "Ópera",
+                    "estilo": "Canto"
+                },
+                {
+                    "atuacao": "Produção",
+                    "area": "Artes Cenicas",
+                    "estilo": "Exposições em geral"
+                }
+            ]
 
     def test_access_url_to_list_all_entes(self):
 
@@ -75,7 +88,8 @@ class EnteTest(APITestCase):
 
     def test_persist_an_ente(self):
 
-        self.ente = mommy.make(Ente, nome="Fulano Cicrano")
+        self.ente = mommy.make(Ente, nome="Fulano Cicrano",
+                               classificacoes=self.classificacoes)
 
         entes = Ente.objects.first()
 
@@ -87,6 +101,7 @@ class EnteTest(APITestCase):
         data = {}
         data.update(self.nome)
         data.update(self.dados_pessoais)
+        data.update({"classificacoes": self.classificacoes})
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Ente.objects.first().nome, 'Cicrano Beltrano')
@@ -102,7 +117,8 @@ class EnteTest(APITestCase):
             informacoes_geograficas=self.endereco,
             telefone=self.telefone,
             email=self.dados_pessoais.get("email"),
-            nascimento=nascimento_date
+            nascimento=nascimento_date,
+            classificacoes=self.classificacoes
         )
 
         url = reverse('api:entes-detail', kwargs={'slug': ente.slug})
@@ -118,6 +134,7 @@ class EnteTest(APITestCase):
         data = {}
         data.update(self.nome)
         data.update(self.dados_pessoais)
+        data.update({"classificacoes": self.classificacoes})
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertContains(response, 'id_pub', status_code=201)
@@ -128,6 +145,7 @@ class EnteTest(APITestCase):
             data = self.nome
             data.update(self.endereco)
             data.update(self.dados_pessoais)
+            data.update({"classificacoes": self.classificacoes})
             response = self.client.post(self.url, data, format='json')
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
             response_data = dict(**response.data)
@@ -140,6 +158,7 @@ class EnteTest(APITestCase):
             data = self.nome
             data.update(self.telefone)
             data.update(self.dados_pessoais)
+            data.update({"classificacoes": self.classificacoes})
             response = self.client.post(self.url, data, format='json')
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
             response_data = dict(**response.data)
@@ -148,7 +167,8 @@ class EnteTest(APITestCase):
             self.assertDictEqual(response_data, data)
 
     def test_should_retrieve_a_ente(self):
-        ente = mommy.make(Ente, nome="Fulano Cicrano")
+        ente = mommy.make(Ente, nome="Fulano Cicrano",
+                          classificacoes=self.classificacoes)
         url = reverse('api:entes-detail', kwargs={'slug': ente.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -180,15 +200,18 @@ class ClassificacoesTest(APITestCase):
 
 class PerfilArtisticoTest(APITestCase):
     def setUp(self):
-        self.ente = mommy.make(Ente, nome="Fulano Cicrano")
-        self.classificacao = {"area": "Artes Visuais",
-                              "estilo": "Exposicoes em geral"}
+        classificacoes = [
+            {
+                "area": "Artes Visuais",
+                "estilo": "Exposicoes em geral",
+                "experiencia": 3
+            }
+        ]
+        self.ente = mommy.make(Ente, nome="Fulano Cicrano",
+                               classificacoes=classificacoes)
         self.perfil = PerfilArtistico.objects.create(
             nome="Cantor Fulano",
             ente=self.ente,
-            atuacao=PerfilArtistico.ATUACAO_CHOICES.gestao,
-            classificacao=self.classificacao,
-            experiencia=2,
             historico="Breve Historico"
         )
         self.url = reverse('api:perfis', kwargs={'slug': self.ente.slug})
@@ -206,12 +229,6 @@ class PerfilArtisticoTest(APITestCase):
             {
                 "slug": "cantor-fulano",
                 "nome": "Cantor Fulano",
-                "tipo_atuacao": "Gestão",
-                "classificacao": {
-                    "area": "Artes Visuais",
-                    "estilo": "Exposicoes em geral"
-                },
-                "tempo_experiencia": "2 Anos",
                 "historico": "Breve Historico"
             }
         ])
@@ -219,24 +236,12 @@ class PerfilArtisticoTest(APITestCase):
     def test_should_post_profile(self):
         data = {
             "nome": "Tocador Fulano",
-            "atuacao": "producao",
-            "classificacao": {
-                "area": "Música",
-                "estilo": "Rock Nacional"
-            },
-            "experiencia": 4,
             "historico": "Breve Historico"
         }
 
         output_data = {
             "slug": "tocador-fulano",
             "nome": "Tocador Fulano",
-            "tipo_atuacao": "Produção",
-            "classificacao": {
-                "area": "Música",
-                "estilo": "Rock Nacional"
-            },
-            "tempo_experiencia": "4 Anos",
             "historico": "Breve Historico"
         }
 
@@ -249,12 +254,6 @@ class PerfilArtisticoTest(APITestCase):
         output_data = {
             "slug": "cantor-fulano",
             "nome": "Cantor Fulano",
-            "tipo_atuacao": "Gestão",
-            "classificacao": {
-                "area": "Artes Visuais",
-                "estilo": "Exposicoes em geral"
-            },
-            "tempo_experiencia": "2 Anos",
             "historico": "Breve Historico"
         }
         url = reverse('api:perfis-detail', kwargs={'slug': self.perfil.slug})
@@ -269,11 +268,7 @@ class PerfilArtisticoTest(APITestCase):
 
         # Tratando resposta e retirando campos somente para leitura
         data = json.loads(response.content.decode('utf-8'))
-        data.pop('tipo_atuacao')
-        data.pop('tempo_experiencia')
 
         data["nome"] = "Perfil Alterado"
-        data["atuacao"] = "producao"
-        data["experiencia"] = 2
         response = self.client.put(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
