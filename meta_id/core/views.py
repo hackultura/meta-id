@@ -5,7 +5,8 @@ from rest_framework import status
 from .serializers import (
     EnteSerializer,
     ClassificacaoSerializer,
-    PerfilArtisticoSerializer
+    PerfilArtisticoSerializer,
+    generate_atuacao_json
 )
 from .models import Ente, ClassificacaoArtistica, PerfilArtistico
 
@@ -22,7 +23,6 @@ class EnteView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        import ipdb; ipdb.set_trace()
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -46,6 +46,11 @@ class ClassificacoesListView(APIView):
         classificacoes = ClassificacaoArtistica.objects.all()
         serializer = ClassificacaoSerializer(classificacoes, many=True)
         return Response(serializer.data)
+
+
+class AtuacoesListView(APIView):
+    def get(self, request):
+        return Response(generate_atuacao_json())
 
 
 class PerfilArtisticoView(APIView):

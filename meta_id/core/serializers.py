@@ -6,6 +6,23 @@ from .models import Ente, ClassificacaoArtistica, PerfilArtistico
 from .fields import EnderecoField, TelefoneField
 
 
+def generate_atuacao_json():
+    """
+    Trata o objeto Ente.ATUACAO_CHOICES no formato
+    adequado para ser usado pelo client.
+    """
+    choices_map = Ente.ATUACAO_CHOICES._display_map
+    atuacoes = []
+
+    for atuacao_key in choices_map.keys():
+        atuacao_dict = {}
+        atuacao_dict["rotulo"] = choices_map.get(atuacao_key)
+        atuacao_dict["valor"] = atuacao_key
+        atuacoes.append(atuacao_dict)
+
+    return atuacoes
+
+
 class EnteSerializer(serializers.ModelSerializer):
     id_pub = serializers.UUIDField(required=False)
     informacoes_geograficas = EnderecoField(required=False)

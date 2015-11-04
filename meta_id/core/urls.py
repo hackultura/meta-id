@@ -4,6 +4,7 @@ from .views import (
     EnteView,
     EnteDetailView,
     ClassificacoesListView,
+    AtuacoesListView,
     PerfilArtisticoView,
     PerfilArtisticoDetailView
 )
@@ -16,6 +17,8 @@ urlpatterns = [
         PerfilArtisticoView.as_view(), name='perfis'),
     url(r'^perfis/(?P<slug>[\w-]+)/$',
         PerfilArtisticoDetailView.as_view(), name='perfis-detail'),
+    url(r'^atuacoes/$', AtuacoesListView.as_view(),
+        name='atuacoes-list'),
     url(r'^classificacoes/$', ClassificacoesListView.as_view(),
         name='classificacoes-list'),
 ]

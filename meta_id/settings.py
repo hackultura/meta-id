@@ -15,7 +15,7 @@ import os
 
 import dj_database_url
 
-#from django.conf.global_settings import DATE_INPUT_FORMATS
+from django.conf import settings
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -113,15 +113,22 @@ STATIC_URL = '/static/'
 
 # Django Rest Framework
 REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-    ),
-    'DEFAULT_PARSER_CLASSES': (
-        'rest_framework.parsers.JSONParser',
-    ),
     'DATE_FORMAT': "%d/%m/%Y",
     'DATE_INPUT_FORMATS':["%d/%m/%Y", "%d/%m/%y"]
 }
+
+# Desabilitando o friendly browser view do Django Rest Framework
+if not settings.DEBUG:
+    REST_FRAMEWORK.update({
+        'DEFAULT_RENDERER_CLASSES': (
+            'rest_framework.renderers.JSONRenderer',
+        )
+    })
+    REST_FRAMEWORK.update({
+        'DEFAULT_PARSER_CLASSES': (
+            'rest_framework.parsers.JSONParser',
+        )
+    })
 
 # Model Mommy
 MOMMY_CUSTOM_FIELDS_GEN = {

@@ -13,12 +13,12 @@ from model_utils import Choices
 class Ente(models.Model):
 
     ATUACAO_CHOICES = Choices(
-        ("gestao", _(u"Gestão")),
-        ("pesquisa", _(u"Pesquisa")),
-        ("facilitacao_formacao", _(u"Facilitação/Formação")),
-        ("producao", _(u"Produção")),
-        ("criacao_desenv", _(u"Criação/Desenvolvimento Artístico")),
-        ("suporte", _(u"Suporte Técnico")),
+        ("gestao", u"Gestão"),
+        ("pesquisa", u"Pesquisa"),
+        ("facilitacao_formacao", u"Facilitação/Formação"),
+        ("producao", u"Produção"),
+        ("criacao_desenv", u"Criação/Desenvolvimento Artístico"),
+        ("suporte", u"Suporte Técnico"),
     )
 
     id_pub = models.UUIDField(default=uuid.uuid4, editable=False)
