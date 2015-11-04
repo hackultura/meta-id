@@ -3,7 +3,7 @@
 from rest_framework import serializers
 
 from .models import Ente, ClassificacaoArtistica, PerfilArtistico
-from .fields import EnderecoField, TelefoneField
+from .fields import EnderecoField, TelefoneField, ClassificacoesField
 
 
 def generate_atuacao_json():
@@ -28,7 +28,7 @@ class EnteSerializer(serializers.ModelSerializer):
     informacoes_geograficas = EnderecoField(required=False)
     telefone = TelefoneField(required=False)
     nascimento = serializers.DateField()
-    classificacoes = serializers.JSONField()
+    classificacoes = ClassificacoesField()
 
     class Meta:
         model = Ente
