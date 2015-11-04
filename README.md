@@ -7,10 +7,11 @@ Para organizar a complexidade das diversas identidades culturais que um ente pod
 
 O projeto está sendo desenvolvido em Python utilizando Django como framework e utilizando PostgreSQL como banco de dados.
 
-Para instalar as dependencias:
+Para instalar as dependencias no seu S.O.:
+```# dnf install python-dev postgresql postgresql-devel```
 
-'''
-pip install -r requirements.txt
-'''
+Para instalar as dependencias para um ambiente python:
+
+```pip install -r requirements.txt```
 
 
