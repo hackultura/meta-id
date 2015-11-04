@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from rest_framework import serializers
+from rest_localflavor.br.serializers import BRCPFField
 
 from .models import Ente, ClassificacaoArtistica, PerfilArtistico
 from .fields import EnderecoField, TelefoneField, ClassificacoesField
@@ -28,6 +29,7 @@ class EnteSerializer(serializers.ModelSerializer):
     informacoes_geograficas = EnderecoField(required=False)
     telefone = TelefoneField(required=False)
     nascimento = serializers.DateField()
+    cpf = BRCPFField()
     classificacoes = ClassificacoesField()
 
     class Meta:
