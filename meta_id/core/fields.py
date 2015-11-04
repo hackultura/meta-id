@@ -57,6 +57,9 @@ class ClassificacoesField(serializers.JSONField):
     def to_internal_value(self, data):
         validated_data = []
 
+        if len(data) == 0:
+            msg = u"Os dados das classificações são obrigatórios."
+            raise serializers.ValidationError(msg)
 
         for item in data:
             if isinstance(item, str):
