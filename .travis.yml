@@ -5,8 +5,21 @@ python:
   - "3.3"
   - "2.7"
 
-# before_install:
-#   - pip install codecov
+addons:
+  postgresql: "9.4"
+
+services:
+  - postgresql
+
+before_script:
+  - psql -c 'create database meta_id_test;' -U postgres
+
+env:
+  - DATABASE_URL="postgres://postgres@localhost/meta_id_test"
+
+before_install:
+  #- pip install codecov
+    - python manage.py migrate --noinput
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install: pip install -r requirements.txt
