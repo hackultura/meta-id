@@ -14,7 +14,7 @@ class EnderecoField(serializers.JSONField):
 
 
         for item in data:
-            if isinstance(item, str):
+            if isinstance(item, str) or isinstance(item, unicode):
                 continue
             if item.get('endereco') in [None, ""]:
                 msg = u"Insira todo o endereço corretamente."
