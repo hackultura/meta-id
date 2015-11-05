@@ -11,11 +11,8 @@ addons:
 services:
   - postgresql
 
-before_script:
-    - sudo -u postgres psql -c 'create database meta_id_test;'
-
 env:
-  - DATABASE_URL="postgres://postgres@localhost/meta_id_test"
+  - DATABASE_URL="postgres://travis@localhost/travis"
 
 before_install:
   #- pip install codecov
