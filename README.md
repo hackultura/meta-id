@@ -7,10 +7,32 @@ Para organizar a complexidade das diversas identidades culturais que um ente pod
 
 O projeto está sendo desenvolvido em Python utilizando Django como framework e utilizando PostgreSQL como banco de dados.
 
+## Requisitos
+
+Consideramos que você possui os seguintes requisitos:
+
+ - Python >=2.7
+ - Pyenv
+ - Virtualenv
+ - PostgreSQL
+
 Para instalar as dependencias:
 
-'''
-pip install -r requirements.txt
-'''
+```bash
+make setup
+```
 
+## Testes
 
+Os testes são rodados pelo `tox`. Dessa forma ele testa nas seguintes versões do Python:
+
+ - Python 2.7.x
+ - Python 3.3.x
+ - Python 3.4.x
+ - Python 3.5.x
+
+Para isso, rode o seguinte comando:
+
+```bash
+make tox
+```

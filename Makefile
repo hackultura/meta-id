@@ -1,4 +1,4 @@
-.PHONY: pyenv tox run test
+.PHONY: pyenv tox run test setup
 
 pyenv:
 	@export PYENV_ROOT=$PWD/.tox/.pyenv
@@ -14,3 +14,6 @@ tox: pyenv
 
 test:
 	@python manage.py test
+
+setup:
+	@pip install -r requirements.txt
