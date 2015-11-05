@@ -8,14 +8,14 @@ services:
 
 
 install:
-  - pip install tox
+  - pip install tox pyenv
 
 before_install:
     - pip install -r requirements.txt
     - python manage.py migrate --noinput
 
 before_script:
-  - psql -c 'create database meta_id_test;' -U postgres
+    - sudo -u postgres createdb -O meta_id_test -p 5432
 
 # command to run tests using coverage, e.g. python setup.py test
 script: make tox
