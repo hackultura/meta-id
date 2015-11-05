@@ -1,5 +1,6 @@
 # Meta-ID
 
+[![Build Status](https://travis-ci.org/hackultura/meta-id.svg?branch=master)](https://travis-ci.org/hackultura/meta-id)
 
 Meta-ID é um gerênciador de identidades culturais para entes e agentes da cultura.
 
