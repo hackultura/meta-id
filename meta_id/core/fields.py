@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 import re
+import six
 
 from django.utils import timezone
 from rest_framework import serializers
@@ -14,7 +15,7 @@ class EnderecoField(serializers.JSONField):
 
 
         for item in data:
-            if isinstance(item, str) or isinstance(item, unicode):
+            if isinstance(item, six.string_types):
                 continue
             if item.get('endereco') in [None, ""]:
                 msg = u"Insira todo o endereço corretamente."
@@ -35,7 +36,8 @@ class EnderecoField(serializers.JSONField):
                 msg = u"Não foi encontrado o bairro."
                 raise serializers.ValidationError(msg)
 
-            item["adicionado_em"] = timezone.now()
+            if not isinstance(item, six.string_types):
+                item["adicionado_em"] = timezone.now()
             validated_data.append(item)
 
         return validated_data
@@ -46,10 +48,11 @@ class TelefoneField(serializers.JSONField):
         validated_data = []
 
         for item in data:
-            if isinstance(item, str):
+            if isinstance(item, six.string_types):
                 continue
-            item["valido"] = True
-            item["adicionado_em"] = timezone.now()
+            else:
+                item["valido"] = True
+                item["adicionado_em"] = timezone.now()
             validated_data.append(item)
 
         return validated_data

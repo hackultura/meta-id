@@ -1,6 +1,7 @@
 language: python
 
 python:
+  - "3.5"
   - "3.4"
   - "3.3"
   - "2.7"
@@ -11,16 +12,20 @@ addons:
 services:
   - postgresql
 
-env:
-  - DATABASE_URL="postgres://travis@localhost/travis"
+
+install:
+  - pip install tox
 
 before_install:
-  #- pip install codecov
     - pip install -r requirements.txt
     - python manage.py migrate --noinput
 
 # command to run tests using coverage, e.g. python setup.py test
-script: python manage.py test --nomigrations
+script: make tox
 
-# after_success:
-#   - codecov
+env:
+  - DATABASE_URL="postgres://travis@localhost/travis"
+  - TOXENV=py27
+  - TOXENV=py33
+  - TOXENV=py34
+  - TOXENV=py35
