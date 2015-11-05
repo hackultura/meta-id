@@ -29,7 +29,7 @@ class EnteView(APIView):
 class EnteDetailView(APIView):
     def get(self, request, slug):
         ente = Ente.objects.get(slug=slug)
-        serializer = EnteSerializer(ente)
+        serializer = EnteSerializer(ente, context={'request': request})
         return Response(serializer.data)
 
     def put(self, request, slug):

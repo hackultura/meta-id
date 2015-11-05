@@ -31,6 +31,13 @@ class EnteSerializer(serializers.ModelSerializer):
     nascimento = serializers.DateField()
     cpf = BRCPFField()
     classificacoes = ClassificacoesField()
+    perfis = serializers.HyperlinkedIdentityField(
+        many=True,
+        read_only=True,
+        view_name='api:perfis-detail',
+        lookup_field='slug',
+        lookup_url_kwarg='slug'
+    )
 
     class Meta:
         model = Ente
@@ -44,6 +51,7 @@ class EnteSerializer(serializers.ModelSerializer):
             'cpf',
             'nascimento',
             'classificacoes',
+            'perfis',
         )
         read_only_fields = ('slug')
 

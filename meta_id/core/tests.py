@@ -63,7 +63,7 @@ class EnteTest(APITestCase):
 
             self.dados_pessoais = {
                 "email": "fulano.cicrano@mail.com",
-                "cpf": "019.012.100-11",
+                "cpf": "885.723.504-11",
                 "nascimento": "01/07/1984"
             }
 
@@ -71,12 +71,14 @@ class EnteTest(APITestCase):
                 {
                     "atuacao": "Produção",
                     "area": "Ópera",
-                    "estilo": "Canto"
+                    "estilo": "Canto",
+                    "experiencia": 1
                 },
                 {
                     "atuacao": "Produção",
                     "area": "Artes Cenicas",
-                    "estilo": "Exposições em geral"
+                    "estilo": "Exposições em geral",
+                    "experiencia": 3
                 }
             ]
 
@@ -118,6 +120,7 @@ class EnteTest(APITestCase):
             telefone=self.telefone,
             email=self.dados_pessoais.get("email"),
             nascimento=nascimento_date,
+            cpf="251.716.861-06",
             classificacoes=self.classificacoes
         )
 
@@ -146,6 +149,7 @@ class EnteTest(APITestCase):
             data.update(self.endereco)
             data.update(self.dados_pessoais)
             data.update({"classificacoes": self.classificacoes})
+            data.update({"perfis": []})
             response = self.client.post(self.url, data, format='json')
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
             response_data = dict(**response.data)
@@ -159,6 +163,7 @@ class EnteTest(APITestCase):
             data.update(self.telefone)
             data.update(self.dados_pessoais)
             data.update({"classificacoes": self.classificacoes})
+            data.update({"perfis": []})
             response = self.client.post(self.url, data, format='json')
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
             response_data = dict(**response.data)
