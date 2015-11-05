@@ -23,4 +23,5 @@ env:
   - TOXENV=py27
   - TOXENV=py33
   - TOXENV=py34
-  - TOXENV=py35
+  # Comentando por não ser oficial ainda
+  # - TOXENV=py35
