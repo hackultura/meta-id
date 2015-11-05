@@ -20,7 +20,7 @@ before_install:
     - python manage.py migrate --noinput
 
 # command to run tests using coverage, e.g. python setup.py test
-script: python manage.py test
+script: python manage.py test --nomigrations
 
 # after_success:
 #   - codecov
