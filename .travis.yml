@@ -18,8 +18,7 @@ before_install:
 script: make tox
 
 env:
-  - DATABASE_URL="postgres://travis@localhost/travis"
-  - TOXENV=py27
-  - TOXENV=py33
-  - TOXENV=py34
-  - TOXENV=py35
+  - TOXENV=py27 DATABASE_URL="postgres://travis@localhost/travis"
+  - TOXENV=py33 DATABASE_URL="postgres://travis@localhost/travis"
+  - TOXENV=py34 DATABASE_URL="postgres://travis@localhost/travis"
+  - TOXENV=py35 DATABASE_URL="postgres://travis@localhost/travis"
