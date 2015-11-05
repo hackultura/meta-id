@@ -17,7 +17,7 @@ before_script:
   - psql -c 'create database meta_id_test;' -U postgres
 
 # command to run tests using coverage, e.g. python setup.py test
-script: make tox
+script: tox
 
 env:
   - TOXENV=py27
