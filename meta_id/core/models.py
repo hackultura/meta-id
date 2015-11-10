@@ -142,6 +142,21 @@ class PortfolioAudio(Conteudo):
         return "audio"
 
 
+class PortfolioVideo(Conteudo):
+    PLATFORM_CHOICES = Choices(
+        ("youtube", u"Youtube"),
+        ("vimeo", u"Vimeo"),
+    )
+    nome = models.CharField(max_length=255, blank=False)
+    url = models.URLField(max_length=255, blank=False)
+    plataforma = models.CharField(max_length=30, choices=PLATFORM_CHOICES,
+                                  blank=False)
+
+    @property
+    def _type(self):
+        """Define o tipo de conteudo"""
+        return "video"
+
 
 class ClassificacaoArtistica(models.Model):
     area = models.CharField("Area Artistica", max_length=100)
