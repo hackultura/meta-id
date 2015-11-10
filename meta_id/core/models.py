@@ -132,6 +132,16 @@ class PortfolioAlbum(Conteudo):
     nome = models.CharField(max_length=255, blank=False)
 
 
+class PortfolioAudio(Conteudo):
+    nome = models.CharField(max_length=255, blank=False)
+    audio = models.FileField(upload_to=generate_portfolio_filepath)
+
+    @property
+    def _type(self):
+        """Define o tipo de conteudo"""
+        return "audio"
+
+
 
 class ClassificacaoArtistica(models.Model):
     area = models.CharField("Area Artistica", max_length=100)

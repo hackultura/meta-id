@@ -14,6 +14,7 @@ from meta_id.core.models import (
     PortfolioAlbum,
     PortfolioImagem,
     PortfolioImagemAlbum,
+    PortfolioAudio,
     Ente,
     PerfilArtistico
 )
@@ -81,3 +82,21 @@ class PortfolioAlbumTest(TestCase):
     def test_should_field_atualizado_em(self):
         field = PortfolioAlbum._meta.get_field('atualizado_em')
         self.assertIsInstance(field, models.DateTimeField)
+
+
+class PortfolioAudioTest(TestCase):
+    def test_should_field_nome(self):
+        field = PortfolioAudio._meta.get_field('nome')
+        self.assertIsInstance(field, models.CharField)
+
+    def test_should_field_criado_em(self):
+        field = PortfolioAudio._meta.get_field('criado_em')
+        self.assertIsInstance(field, models.DateTimeField)
+
+    def test_should_field_atualizado_em(self):
+        field = PortfolioAudio._meta.get_field('atualizado_em')
+        self.assertIsInstance(field, models.DateTimeField)
+
+    def test_should_field_audio(self):
+        field = PortfolioAudio._meta.get_field('audio')
+        self.assertIsInstance(field, models.FileField)
