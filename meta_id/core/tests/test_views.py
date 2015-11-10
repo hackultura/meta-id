@@ -13,7 +13,7 @@ from rest_framework.test import APITestCase
 
 from model_mommy import mommy
 
-from .models import Ente, ClassificacaoArtistica, PerfilArtistico
+from meta_id.core.models import Ente, ClassificacaoArtistica, PerfilArtistico
 
 
 class EnteTest(APITestCase):

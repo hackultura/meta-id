@@ -111,6 +111,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEIDA_URL = '/media/'
+
 # Django Rest Framework
 REST_FRAMEWORK = {
     'DATE_FORMAT': "%d/%m/%Y",
