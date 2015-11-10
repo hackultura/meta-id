@@ -35,19 +35,19 @@ class PortfolioArquivoTest(TestCase):
         self.assertIsInstance(field, models.FileField)
 
 
-# class PortfolioImagemTest(TestCase):
-#     def test_should_field_nome(self):
-#         field = PortfolioImagem._meta.get_field('nome')
-#         self.assertIsInstance(field, models.CharField)
-# 
-#     def test_should_field_criado_em(self):
-#         field = PortfolioImagem._meta.get_field('criado_em')
-#         self.assertIsInstance(field, models.DateTimeField)
-# 
-#     def test_should_field_atualizado_em(self):
-#         field = PortfolioImagem._meta.get_field('atualizado_em')
-#         self.assertIsInstance(field, models.DateTimeField)
-# 
-#     def test_should_field_imagem(self):
-#         field = PortfolioImagem._meta.get_field('imagem')
-#         self.assertIsInstance(field, models.ImageField)
+class PortfolioImagemTest(TestCase):
+    def test_should_field_nome(self):
+        field = PortfolioImagem._meta.get_field('nome')
+        self.assertIsInstance(field, models.CharField)
+
+    def test_should_field_criado_em(self):
+        field = PortfolioImagem._meta.get_field('criado_em')
+        self.assertIsInstance(field, models.DateTimeField)
+
+    def test_should_field_atualizado_em(self):
+        field = PortfolioImagem._meta.get_field('atualizado_em')
+        self.assertIsInstance(field, models.DateTimeField)
+
+    def test_should_field_imagem(self):
+        field = PortfolioImagem._meta.get_field('imagem')
+        self.assertIsInstance(field, models.ImageField)

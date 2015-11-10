@@ -93,11 +93,19 @@ class Conteudo(models.Model):
 class PortfolioArquivo(Conteudo):
     arquivo = models.FileField(upload_to=generate_portfolio_filepath)
 
-
     @property
     def _type(self):
         """Define o tipo de conteudo"""
         return "file"
+
+
+class PortfolioImagem(Conteudo):
+    imagem = models.ImageField(upload_to=generate_portfolio_filepath)
+
+    @property
+    def _type(self):
+        """Define o tipo de conteudo"""
+        return "image"
 
 
 class ClassificacaoArtistica(models.Model):
