@@ -82,7 +82,6 @@ class Conteudo(models.Model):
     anexado nas entidades do sistema.
     """
     id_pub = models.UUIDField(default=uuid.uuid4, editable=False)
-    nome = models.CharField(max_length=255, blank=False)
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
 
@@ -90,7 +89,19 @@ class Conteudo(models.Model):
         abstract = True
 
 
+class ConteudoImagemMixin(models.Model):
+    """
+    Modelo abstrato que trata das imagens usadas nas
+    entidades do sistema.
+    """
+    imagem = models.ImageField(upload_to=generate_portfolio_filepath)
+
+    class Meta:
+        abstract = True
+
+
 class PortfolioArquivo(Conteudo):
+    nome = models.CharField(max_length=255, blank=False)
     arquivo = models.FileField(upload_to=generate_portfolio_filepath)
 
     @property
@@ -99,13 +110,27 @@ class PortfolioArquivo(Conteudo):
         return "file"
 
 
-class PortfolioImagem(Conteudo):
-    imagem = models.ImageField(upload_to=generate_portfolio_filepath)
+class PortfolioImagem(ConteudoImagemMixin, Conteudo):
+    descricao = models.CharField(max_length=255, blank=False)
 
     @property
     def _type(self):
         """Define o tipo de conteudo"""
         return "image"
+
+
+class PortfolioImagemAlbum(ConteudoImagemMixin, Conteudo):
+    album = models.ForeignKey('PortfolioAlbum')
+
+    @property
+    def _type(self):
+        """Define o tipo de conteudo"""
+        return "album_image"
+
+
+class PortfolioAlbum(Conteudo):
+    nome = models.CharField(max_length=255, blank=False)
+
 
 
 class ClassificacaoArtistica(models.Model):
