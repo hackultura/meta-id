@@ -23,8 +23,7 @@ def generate_portfolio_filepath(instance, filename):
     :param filename:
         Nome do arquivo que acabou de fazer upload
     """
-    path = "portfolios/{slug}/{type}/{filename}".format(
-        slug=instance.perfil.slug,
+    path = "portfolios/{type}/{filename}".format(
         type=instance._type,
         filename=filename
     )

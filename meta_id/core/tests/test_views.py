@@ -13,6 +13,7 @@ from rest_framework.test import APITestCase
 
 from model_mommy import mommy
 
+from meta_id.test.fixtures import file
 from meta_id.core.models import Ente, ClassificacaoArtistica, PerfilArtistico
 
 
@@ -279,3 +280,23 @@ class PerfilArtisticoTest(APITestCase):
         data["nome"] = "Perfil Alterado"
         response = self.client.put(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class PortfolioPerfilTest(APITestCase):
+    def setUp(self):
+        self.ente = mommy.make(Ente, nome="Fulano")
+        self.perfil = mommy.make(PerfilArtistico, nome="Perfil Teste", ente=self.ente)
+
+    def test_post_portfolios_with_filetype(self):
+        url = reverse('api:portfolios-detail',
+                      kwargs={'slug': self.perfil.slug, 'type': "file"})
+
+        fake_file = file.dummy_base64_file()
+
+        data = {
+            "nome": "Arquivo de Teste",
+            "conteudo": fake_file
+        }
+
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)

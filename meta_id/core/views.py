@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -6,7 +8,8 @@ from .serializers import (
     EnteSerializer,
     ClassificacaoSerializer,
     PerfilArtisticoSerializer,
-    generate_atuacao_json
+    generate_atuacao_json,
+    create_serializer_portfolio_type,
 )
 from .models import Ente, ClassificacaoArtistica, PerfilArtistico
 
@@ -84,3 +87,13 @@ class PerfilArtisticoDetailView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class PortfolioDetailView(APIView):
+    def post(self, request, type, slug):
+        perfil = PerfilArtistico.objects.get(slug=slug)
+        serializer = create_serializer_portfolio_type(
+            type, data=request.data
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

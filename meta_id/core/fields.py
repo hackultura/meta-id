@@ -4,8 +4,12 @@ from __future__ import unicode_literals
 
 import re
 import six
+import base64
+import uuid
 
 from django.utils import timezone
+from django.core.files.base import ContentFile
+
 from rest_framework import serializers
 
 
@@ -67,7 +71,7 @@ class ClassificacoesField(serializers.JSONField):
             raise serializers.ValidationError(msg)
 
         for item in data:
-            if isinstance(item, str):
+            if isinstance(item, six.string_types):
                 continue
             if item.get('atuacao') in [None, ""]:
                 msg = u"Insira uma atuação correta."
@@ -83,3 +87,64 @@ class ClassificacoesField(serializers.JSONField):
                 raise serializers.ValidationError(msg)
 
         return data
+
+
+class FileUploadJSONField(serializers.JSONField):
+    def to_internal_value(self, data):
+
+        for item in data:
+            if isinstance(item, six.string_types):
+                continue
+            if item.get('tamanho') in [None, ""]:
+                msg = u"Defina o tamanho do arquivo (em bytes)."
+                raise serializers.ValidationError(msg)
+            if item.get('nome_arquivo') in [None, ""]:
+                msg = u"Defina o nome do arquivo."
+                raise serializers.ValidationError(msg)
+            if item.get('formato') in [None, ""]:
+                msg = u"Defina o formato válido, no padrão MIME."
+                raise serializers.ValidationError(msg)
+            if item.get('base64') in [None, ""]:
+                msg = u"Envie o arquivo no formato base64."
+                raise serializers.ValidationError(msg)
+
+            # Validando o formato base64
+            base64_pattern = r'(?:[A-Za-z0-9+/]{4}){2,}(?:[A-Za-z0-9+/]{2}' \
+            '[AEIMQUYcgkosw048]=|[A-Za-z0-9+/][AQgw]==)'
+
+            if re.search(base64_pattern, item.get('base64')) is None:
+                msg = u"Envie um arquivo com formato base64 válido."
+                raise serializers.ValidationError(msg)
+
+        return data
+
+
+class FileBase64Field(serializers.FileField):
+    def to_internal_value(self, data):
+        if data.get('tamanho') in [None, ""]:
+            msg = u"Defina o tamanho do arquivo (em bytes)."
+            raise serializers.ValidationError(msg)
+        if data.get('nome_arquivo') in [None, ""]:
+            msg = u"Defina o nome do arquivo."
+            raise serializers.ValidationError(msg)
+        if data.get('formato') in [None, ""]:
+            msg = u"Defina o formato válido, no padrão MIME."
+            raise serializers.ValidationError(msg)
+        if data.get('base64') in [None, ""]:
+            msg = u"Envie o arquivo no formato base64."
+            raise serializers.ValidationError(msg)
+
+        # Validando o formato base64
+        base64_pattern = r'(?:[A-Za-z0-9+/]{4}){2,}(?:[A-Za-z0-9+/]{2}' \
+        '[AEIMQUYcgkosw048]=|[A-Za-z0-9+/][AQgw]==)'
+
+        if re.search(base64_pattern, data.get('base64')) is None:
+            msg = u"Envie um arquivo com formato base64 válido."
+            raise serializers.ValidationError(msg)
+
+        if isinstance(data, dict):
+            id = uuid.uuid4()
+            content, ext = data.get('formato').split("/")
+            data = ContentFile(base64.b64decode(data.get('base64')),
+                               name=id.urn[9:] + '.' + ext)
+        return super(FileBase64Field, self).to_internal_value(data)
