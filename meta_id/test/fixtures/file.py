@@ -2,15 +2,28 @@
 
 import base64
 import os
+import random
+
+from PIL import Image
 
 try:
     from StringIO import StringIO
+    from io import BytesIO
 except Exception as e:
-    from io import StringIO
+    from io import StringIO, BytesIO
 
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
 
+
+IMAGE_TYPE = {
+    'png': 'image/png',
+    'gif': 'image/gif',
+    'jpg': 'image/jpeg',
+    'jpeg': 'image/jpeg'
+}
+
+VALID_IMAGES = IMAGE_TYPE.keys()
 
 def dummy_file(name='file_test', format='txt', **kwargs):
     """
@@ -41,6 +54,23 @@ def dummy_file(name='file_test', format='txt', **kwargs):
     return file_obj
 
 
+def dummy_image(size=(50, 50)):
+    """
+    Gera uma nova imagem na memória
+    """
+    image = Image.new("RGBA", size, (255,255,255))
+    pixel = image.load()
+
+    for x in range(size[0]):
+        for y in range(size[1]):
+            red = random.randrange(0, 255)
+            blue = random.randrange(0, 255)
+            green = random.randrange(0, 255)
+            pixel[x,y] = (red, blue, green)
+
+    return image
+
+
 def dummy_base64_file(name='file_test', format='csv', **kwargs):
     """
     Gera um arquivo para 'mockar' nos testes, mas em formato base64. Você pode
@@ -66,13 +96,22 @@ def dummy_base64_file(name='file_test', format='csv', **kwargs):
     content = kwargs.pop('content', "Dummy,Content")
     content_type = kwargs.pop('content_type', "text/csv")
     filename = "{0}.{1}".format(name, format)
-
     file_obj = StringIO()
-    file_obj.write(content)
-    file_obj.seek(0, os.SEEK_END)
 
-    data = base64.b64encode(content.encode()).decode("utf-8")
-    filesize = file_obj.tell()
+    if format not in VALID_IMAGES:
+        file_obj.write(content)
+        filesize = file_obj.tell()
+        data = base64.b64encode(content.encode()).decode("utf-8")
+    else:
+        from PIL import Image
+        image = dummy_image()
+        data = base64.b64encode(image.tobytes()).decode("utf-8")
+        file_obj = BytesIO()
+        image.save(file_obj, format)
+        filesize = file_obj.tell()
+        content_type = IMAGE_TYPE.get(format)
+
+    file_obj.seek(0, os.SEEK_END)
 
     data_file = {}
     data_file["tamanho"] = filesize

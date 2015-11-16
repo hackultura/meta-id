@@ -8,6 +8,7 @@ from .models import (
     ClassificacaoArtistica,
     PerfilArtistico,
     PortfolioArquivo,
+    PortfolioImagem,
 )
 from .fields import (
     EnderecoField,
@@ -48,7 +49,7 @@ def create_serializer_portfolio_type(type, **kwargs):
     if type == "file":
         return PortfolioArquivoSerializer(**kwargs)
     if type == "image":
-        pass
+        return PortfolioImageSerializer(**kwargs)
     if type == "album":
         pass
     if type == "audio":
@@ -123,5 +124,15 @@ class PortfolioArquivoSerializer(serializers.ModelSerializer):
         model = PortfolioArquivo
         fields = (
             'nome',
+            'conteudo',
+        )
+
+
+class PortfolioImageSerializer(serializers.ModelSerializer):
+    conteudo = FileBase64Field(source='imagem')
+    class Meta:
+        model = PortfolioImagem
+        fields = (
+            'descricao',
             'conteudo',
         )

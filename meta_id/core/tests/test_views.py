@@ -300,3 +300,18 @@ class PortfolioPerfilTest(APITestCase):
 
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_post_porffolio_with_image(self):
+        url = reverse('api:portfolios-detail',
+                      kwargs={'slug': self.perfil.slug, 'type': "image"})
+
+        fake_image = file.dummy_base64_file(format="png")
+
+        data = {
+            "descricao": "Nome da Imagem",
+            "conteudo": fake_image
+        }
+
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
