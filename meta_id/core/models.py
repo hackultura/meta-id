@@ -119,7 +119,7 @@ class PortfolioImagem(ConteudoImagemMixin, Conteudo):
 
 
 class PortfolioImagemAlbum(ConteudoImagemMixin, Conteudo):
-    album = models.ForeignKey('PortfolioAlbum')
+    album = models.ForeignKey('PortfolioAlbum', related_name='fotos')
 
     @property
     def _type(self):

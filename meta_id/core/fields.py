@@ -120,7 +120,11 @@ class FileUploadJSONField(serializers.JSONField):
 
 
 class FileBase64Field(serializers.FileField):
-    def to_internal_value(self, data):
+    def __init__(self, *args, **kwargs):
+        self.many = kwargs.pop('many', False)
+        super(FileBase64Field, self).__init__(*args, **kwargs)
+
+    def _parse_data(self, data):
         if data.get('tamanho') in [None, ""]:
             msg = u"Defina o tamanho do arquivo (em bytes)."
             raise serializers.ValidationError(msg)
@@ -147,4 +151,14 @@ class FileBase64Field(serializers.FileField):
             content, ext = data.get('formato').split("/")
             data = ContentFile(base64.b64decode(data.get('base64')),
                                name=id.urn[9:] + '.' + ext)
-        return super(FileBase64Field, self).to_internal_value(data)
+        return data
+
+    def to_internal_value(self, data):
+        if isinstance(data, list):
+            parsed_data = []
+            for item in data:
+                parsed_data.append(self._parse_data(item))
+        else:
+            parsed_data = self._parse_data(data)
+
+        return super(FileBase64Field, self).to_internal_value(parsed_data)
