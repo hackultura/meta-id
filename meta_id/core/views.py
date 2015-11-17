@@ -96,5 +96,4 @@ class PortfolioDetailView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        import ipdb; ipdb.set_trace()
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
