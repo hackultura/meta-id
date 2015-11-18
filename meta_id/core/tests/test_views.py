@@ -330,6 +330,20 @@ class PortfolioPerfilTest(APITestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    def test_post_portfolio_with_video(self):
+        url = reverse('api:portfolios-detail',
+                      kwargs={'slug': self.perfil.slug, 'type': "video"})
+
+
+        data = {
+            "nome": "Nome do video",
+            "url": "https://www.youtube.com/watch?v=c4wuwEIQafg",
+            "plataforma": "youtube"
+        }
+
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
 
     # TODO: Testar novamente
     # def test_post_portfolio_with_album(self):

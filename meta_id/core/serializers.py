@@ -12,6 +12,7 @@ from .models import (
     PortfolioImagemAlbum,
     PortfolioAlbum,
     PortfolioAudio,
+    PortfolioVideo,
 )
 from .fields import (
     EnderecoField,
@@ -58,7 +59,7 @@ def create_serializer_portfolio_type(type, **kwargs):
     if type == "audio":
         return PortfolioAudioSerializer(**kwargs)
     if type == "video":
-        pass
+        return PortfolioVideoSerializer(**kwargs)
     else:
         raise ValueError("Tipo de conteúdo do serializer inválido")
 
@@ -172,4 +173,14 @@ class PortfolioAudioSerializer(serializers.ModelSerializer):
         fields = (
             'nome',
             'conteudo',
+        )
+
+
+class PortfolioVideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PortfolioVideo
+        fields = (
+            'nome',
+            'url',
+            'plataforma',
         )
