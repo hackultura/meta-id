@@ -315,6 +315,22 @@ class PortfolioPerfilTest(APITestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    def test_post_portfolio_with_audio(self):
+        url = reverse('api:portfolios-detail',
+                      kwargs={'slug': self.perfil.slug, 'type': "audio"})
+
+        fake_audio = file.dummy_base64_file(format="mp3",
+                                            content_type="audio/mp3")
+
+        data = {
+            "nome": "Nome do Audio",
+            "conteudo": fake_audio
+        }
+
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
     # TODO: Testar novamente
     # def test_post_portfolio_with_album(self):
     #     url = reverse('api:portfolios-detail',

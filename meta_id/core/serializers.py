@@ -11,6 +11,7 @@ from .models import (
     PortfolioImagem,
     PortfolioImagemAlbum,
     PortfolioAlbum,
+    PortfolioAudio,
 )
 from .fields import (
     EnderecoField,
@@ -55,7 +56,7 @@ def create_serializer_portfolio_type(type, **kwargs):
     if type == "album":
         return PortfolioAlbumSerializer(**kwargs)
     if type == "audio":
-        pass
+        return PortfolioAudioSerializer(**kwargs)
     if type == "video":
         pass
     else:
@@ -159,6 +160,16 @@ class PortfolioAlbumSerializer(serializers.ModelSerializer):
             'fotos',
         )
 
-    def create(self, validated_data):
-        import ipdb; ipdb.set_trace()
-        return super(PortfolioAlbumSerializer, self).create(validated_data)
+
+class PortfolioAudioSerializer(serializers.ModelSerializer):
+    conteudo = FileBase64Field(source='audio', allow_types=[
+        "audio/mp3",
+        "audio/ogg",
+        "audio/x-ms-wma"
+    ])
+    class Meta:
+        model = PortfolioAudio
+        fields = (
+            'nome',
+            'conteudo',
+        )

@@ -122,36 +122,54 @@ class FileUploadJSONField(serializers.JSONField):
 class FileBase64Field(serializers.FileField):
     def __init__(self, *args, **kwargs):
         self.many = kwargs.pop('many', False)
+        self.allow_types = kwargs.pop('allow_types', [])
+
+        if not isinstance(self.allow_types, list):
+            raise ValueError("'allow_types' aceita somente dados do tipo list.")
+
         super(FileBase64Field, self).__init__(*args, **kwargs)
 
+    def _validate_filetype(self, format):
+        """
+        Verifica se formato esta na lista de formatos
+        validos.
+        """
+        if format in self.allow_types or len(self.allow_types) == 0:
+            return True
+        return False
+
     def _parse_data(self, data):
-        if data.get('tamanho') in [None, ""]:
-            msg = u"Defina o tamanho do arquivo (em bytes)."
-            raise serializers.ValidationError(msg)
-        if data.get('nome_arquivo') in [None, ""]:
-            msg = u"Defina o nome do arquivo."
-            raise serializers.ValidationError(msg)
-        if data.get('formato') in [None, ""]:
-            msg = u"Defina o formato válido, no padrão MIME."
-            raise serializers.ValidationError(msg)
-        if data.get('base64') in [None, ""]:
-            msg = u"Envie o arquivo no formato base64."
-            raise serializers.ValidationError(msg)
+        if self._validate_filetype(data.get('formato')):
+            if data.get('tamanho') in [None, ""]:
+                msg = u"Defina o tamanho do arquivo (em bytes)."
+                raise serializers.ValidationError(msg)
+            if data.get('nome_arquivo') in [None, ""]:
+                msg = u"Defina o nome do arquivo."
+                raise serializers.ValidationError(msg)
+            if data.get('formato') in [None, ""]:
+                msg = u"Defina o formato válido, no padrão MIME."
+                raise serializers.ValidationError(msg)
+            if data.get('base64') in [None, ""]:
+                msg = u"Envie o arquivo no formato base64."
+                raise serializers.ValidationError(msg)
 
-        # Validando o formato base64
-        base64_pattern = r'(?:[A-Za-z0-9+/]{4}){2,}(?:[A-Za-z0-9+/]{2}' \
-        '[AEIMQUYcgkosw048]=|[A-Za-z0-9+/][AQgw]==)'
+            # Validando o formato base64
+            base64_pattern = r'(?:[A-Za-z0-9+/]{4}){2,}(?:[A-Za-z0-9+/]{2}' \
+            '[AEIMQUYcgkosw048]=|[A-Za-z0-9+/][AQgw]==)'
 
-        if re.search(base64_pattern, data.get('base64')) is None:
-            msg = u"Envie um arquivo com formato base64 válido."
+            if re.search(base64_pattern, data.get('base64')) is None:
+                msg = u"Envie um arquivo com formato base64 válido."
+                raise serializers.ValidationError(msg)
+
+            if isinstance(data, dict):
+                id = uuid.uuid4()
+                content, ext = data.get('formato').split("/")
+                data = ContentFile(base64.b64decode(data.get('base64')),
+                                   name=id.urn[9:] + '.' + ext)
+            return data
+        else:
+            msg = u"Arquivo no formato {0} inválido.".format(data.get('formato'))
             raise serializers.ValidationError(msg)
-
-        if isinstance(data, dict):
-            id = uuid.uuid4()
-            content, ext = data.get('formato').split("/")
-            data = ContentFile(base64.b64decode(data.get('base64')),
-                               name=id.urn[9:] + '.' + ext)
-        return data
 
     def to_internal_value(self, data):
         if isinstance(data, list):
