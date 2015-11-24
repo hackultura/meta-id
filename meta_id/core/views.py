@@ -8,10 +8,16 @@ from .serializers import (
     EnteSerializer,
     ClassificacaoSerializer,
     PerfilArtisticoSerializer,
+    DocumentoSerializer,
     generate_atuacao_json,
     create_serializer_portfolio_type,
 )
-from .models import Ente, ClassificacaoArtistica, PerfilArtistico
+from .models import (
+    Ente,
+    ClassificacaoArtistica,
+    PerfilArtistico,
+    define_entity_document,
+)
 
 
 class EnteView(APIView):
@@ -93,6 +99,17 @@ class PortfolioDetailView(APIView):
         serializer = create_serializer_portfolio_type(
             type, data=request.data
         )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DocumentoDetailView(APIView):
+    def post(self, request, entity, slug):
+        entity = define_entity_document(entity, slug)
+        serializer = DocumentoSerializer(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

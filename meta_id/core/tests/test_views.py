@@ -359,3 +359,40 @@ class PortfolioPerfilTest(APITestCase):
 
     #     response = self.client.post(url, data, format='json')
     #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    #
+
+
+class DocumentoTest(APITestCase):
+    def setUp(self):
+        # self.url = reverse('api:documents-list')
+
+        classificacoes = [
+            {
+                "area": "Artes Visuais",
+                "estilo": "Exposicoes em geral",
+                "experiencia": 3
+            }
+        ]
+        self.ente = mommy.make(Ente, nome="Fulano Cicrano",
+                               classificacoes=classificacoes)
+
+        self.documents = [
+            {
+                "owner": ""
+            }
+        ]
+
+    def test_should_post_documents(self):
+        url = reverse('api:documents-detail',
+                      kwargs={'entity': "ente", 'slug': self.ente.slug})
+
+        fake_file = file.dummy_base64_file()
+
+        data = {
+            "nome": "Arquivo de Teste",
+            "vencimento": "01/03/2015",
+            "conteudo": fake_file
+        }
+
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)

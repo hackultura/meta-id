@@ -8,6 +8,7 @@ from .views import (
     PerfilArtisticoView,
     PerfilArtisticoDetailView,
     PortfolioDetailView,
+    DocumentoDetailView,
 )
 
 urlpatterns = [
@@ -24,4 +25,6 @@ urlpatterns = [
         name='atuacoes-list'),
     url(r'^classificacoes/$', ClassificacoesListView.as_view(),
         name='classificacoes-list'),
+    url(r'^documentos/(?P<entity>[\w]+)/(?P<slug>[\w-]+)/$',
+        DocumentoDetailView.as_view(), name='documents-detail'),
 ]

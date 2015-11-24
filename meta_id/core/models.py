@@ -30,6 +30,19 @@ def generate_portfolio_filepath(instance, filename):
     return path
 
 
+def define_entity_document(entity, slug):
+    """
+        Faz busca de um ente ou perfil, para ser usado no
+        cadastro de documentos artisticos e do ente.
+    """
+    if entity == "ente":
+        return Ente.objects.get(slug=slug)
+    if entity == "perfil":
+        return PerfilArtistico.objects.get(slug=slug)
+    else:
+        raise ValueError("Entidade incorreta para a busca.")
+
+
 class Ente(models.Model):
 
     ATUACAO_CHOICES = Choices(
@@ -50,7 +63,7 @@ class Ente(models.Model):
     cpf = models.CharField(_(u"CPF"), max_length=15, blank=False)
     nascimento = models.DateField()
     classificacoes = JSONField()
-    # TODO: Implementar campo documentos
+    # TODO: Implementar campo documentos, mas relacionado aos portfolios
     # documentos = JSONField()
 
 

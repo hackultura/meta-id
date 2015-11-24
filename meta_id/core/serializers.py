@@ -13,6 +13,7 @@ from .models import (
     PortfolioAlbum,
     PortfolioAudio,
     PortfolioVideo,
+    Documento,
 )
 from .fields import (
     EnderecoField,
@@ -183,4 +184,16 @@ class PortfolioVideoSerializer(serializers.ModelSerializer):
             'nome',
             'url',
             'plataforma',
+        )
+
+
+class DocumentoSerializer(serializers.ModelSerializer):
+    vencimento = serializers.DateField()
+    conteudo = FileBase64Field(source='arquivo')
+    class Meta:
+        model = Documento
+        fields = (
+            'nome',
+            'vencimento',
+            'conteudo',
         )
