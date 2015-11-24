@@ -164,6 +164,12 @@ class ClassificacaoArtistica(models.Model):
     )
 
 
+class Documento(Conteudo):
+    nome = models.CharField(max_length=255, blank=False)
+    vencimento = models.DateField()
+    arquivo = models.FileField(upload_to="documentacao/%Y/%m/%d")
+
+
 class Registro(models.Model):
     num_ceac = models.AutoField(
         _('Numero de Registro de CEAC'),

@@ -17,7 +17,8 @@ from meta_id.core.models import (
     PortfolioAudio,
     PortfolioVideo,
     Ente,
-    PerfilArtistico
+    PerfilArtistico,
+    Documento,
 )
 
 
@@ -123,3 +124,25 @@ class PortfolioVideoTest(TestCase):
     def test_should_field_plataforma(self):
         field = PortfolioVideo._meta.get_field('plataforma')
         self.assertIsInstance(field, models.CharField)
+
+
+class DocumentoTest(TestCase):
+    def test_should_field_nome(self):
+        field = Documento._meta.get_field('nome')
+        self.assertIsInstance(field, models.CharField)
+
+    def test_should_field_vencimento(self):
+        field = Documento._meta.get_field('vencimento')
+        self.assertIsInstance(field, models.DateField)
+
+    def test_should_field_criado_em(self):
+        field = Documento._meta.get_field('criado_em')
+        self.assertIsInstance(field, models.DateTimeField)
+
+    def test_should_field_atualizado_em(self):
+        field = Documento._meta.get_field('atualizado_em')
+        self.assertIsInstance(field, models.DateTimeField)
+
+    def test_should_field_arquivo(self):
+        field = Documento._meta.get_field('arquivo')
+        self.assertIsInstance(field, models.FileField)

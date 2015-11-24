@@ -345,12 +345,12 @@ class PortfolioPerfilTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
-    # TODO: Testar novamente
+    # TODO: Validar teste
     # def test_post_portfolio_with_album(self):
     #     url = reverse('api:portfolios-detail',
     #                   kwargs={'slug': self.perfil.slug, 'type': "album"})
 
-    #     images = [file.dummy_base64_file(format="png") for i in range(10)]
+    #     images = [file.dummy_base64_file(format="png") for i in range(2)]
 
     #     data = {
     #         "nome": "Album de Teste",
