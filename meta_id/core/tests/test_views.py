@@ -382,13 +382,13 @@ class DocumentoTest(APITestCase):
             }
         ]
 
-    def test_should_post_documents(self):
-        url = reverse('api:documents-detail',
-                      kwargs={'entity': "ente", 'slug': self.ente.slug})
+    def test_should_post_documents_to_ente_or_profile(self):
+        url = reverse('api:documents-detail')
 
         fake_file = file.dummy_base64_file()
 
         data = {
+            "owner": self.ente.id_pub,
             "nome": "Arquivo de Teste",
             "vencimento": "01/03/2015",
             "conteudo": fake_file

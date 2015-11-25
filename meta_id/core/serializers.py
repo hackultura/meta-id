@@ -188,11 +188,13 @@ class PortfolioVideoSerializer(serializers.ModelSerializer):
 
 
 class DocumentoSerializer(serializers.ModelSerializer):
+    owner = serializers.CharField()
     vencimento = serializers.DateField()
     conteudo = FileBase64Field(source='arquivo')
     class Meta:
         model = Documento
         fields = (
+            'owner',
             'nome',
             'vencimento',
             'conteudo',

@@ -106,8 +106,7 @@ class PortfolioDetailView(APIView):
 
 
 class DocumentoDetailView(APIView):
-    def post(self, request, entity, slug):
-        entity = define_entity_document(entity, slug)
+    def post(self, request):
         serializer = DocumentoSerializer(data=request.data)
 
         if serializer.is_valid():

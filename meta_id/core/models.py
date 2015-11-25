@@ -7,6 +7,7 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django_extensions.db.fields import AutoSlugField
 from postgres.fields import JSONField
@@ -63,8 +64,7 @@ class Ente(models.Model):
     cpf = models.CharField(_(u"CPF"), max_length=15, blank=False)
     nascimento = models.DateField()
     classificacoes = JSONField()
-    # TODO: Implementar campo documentos, mas relacionado aos portfolios
-    # documentos = JSONField()
+    documentos = JSONField(blank=True)
 
 
     class Meta:
@@ -182,6 +182,29 @@ class Documento(Conteudo):
     vencimento = models.DateField()
     arquivo = models.FileField(upload_to="documentacao/%Y/%m/%d")
 
+    @property
+    def owner(self):
+        if hasattr(self, '_owner_instance'):
+            return self._owner_instance
+        return None
+
+    @owner.setter
+    def owner(self, value):
+        """
+        Recebe o uid do owner para ser associado, seja
+        um ente ou perfil
+        """
+        try:
+            self._owner_instance = Ente.objects.get(id_pub=value)
+            return
+        except Ente.DoesNotExist:
+            pass
+        try:
+           self._owner_instance = PerfilArtistico.objects.get(id_pub=value)
+           return
+        except PerfilArtistico.DoesNotExist:
+            raise ObjectDoesNotExist("Documento nao possui um owner.")
+
 
 class Registro(models.Model):
     num_ceac = models.AutoField(
@@ -199,3 +222,6 @@ class Registro(models.Model):
 
     def get_absolute_url():
         return reverse('core.views.registros')
+
+
+from .signals import register_content_by_ente_or_profile

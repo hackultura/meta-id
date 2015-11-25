@@ -25,6 +25,6 @@ urlpatterns = [
         name='atuacoes-list'),
     url(r'^classificacoes/$', ClassificacoesListView.as_view(),
         name='classificacoes-list'),
-    url(r'^documentos/(?P<entity>[\w]+)/(?P<slug>[\w-]+)/$',
+    url(r'^documentos/$',
         DocumentoDetailView.as_view(), name='documents-detail'),
 ]
