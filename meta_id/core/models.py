@@ -178,30 +178,18 @@ class ClassificacaoArtistica(models.Model):
 
 
 class Documento(Conteudo):
+    dono = models.UUIDField()
     nome = models.CharField(max_length=255, blank=False)
     vencimento = models.DateField()
     arquivo = models.FileField(upload_to="documentacao/%Y/%m/%d")
 
-    @property
-    def owner(self):
-        if hasattr(self, '_owner_instance'):
-            return self._owner_instance
-        return None
-
-    @owner.setter
-    def owner(self, value):
-        """
-        Recebe o uid do owner para ser associado, seja
-        um ente ou perfil
-        """
+    def _get_owner(self):
         try:
-            self._owner_instance = Ente.objects.get(id_pub=value)
-            return
+            return Ente.objects.get(id_pub=self.dono)
         except Ente.DoesNotExist:
             pass
         try:
-           self._owner_instance = PerfilArtistico.objects.get(id_pub=value)
-           return
+           return PerfilArtistico.objects.get(id_pub=self.dono)
         except PerfilArtistico.DoesNotExist:
             raise ObjectDoesNotExist("Documento nao possui um owner.")
 
@@ -224,4 +212,7 @@ class Registro(models.Model):
         return reverse('core.views.registros')
 
 
-from .signals import register_content_by_ente_or_profile
+from .signals import (
+    register_content_by_ente_or_profile,
+    remove_content_of_owner
+)

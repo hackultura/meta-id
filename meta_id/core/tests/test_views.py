@@ -14,7 +14,9 @@ from rest_framework.test import APITestCase
 from model_mommy import mommy
 
 from meta_id.test.fixtures import file
-from meta_id.core.models import Ente, ClassificacaoArtistica, PerfilArtistico
+from meta_id.core.models import (
+    Ente, ClassificacaoArtistica, PerfilArtistico, Documento
+)
 
 
 class EnteTest(APITestCase):
@@ -364,8 +366,6 @@ class PortfolioPerfilTest(APITestCase):
 
 class DocumentoTest(APITestCase):
     def setUp(self):
-        # self.url = reverse('api:documents-list')
-
         classificacoes = [
             {
                 "area": "Artes Visuais",
@@ -376,19 +376,13 @@ class DocumentoTest(APITestCase):
         self.ente = mommy.make(Ente, nome="Fulano Cicrano",
                                classificacoes=classificacoes)
 
-        self.documents = [
-            {
-                "owner": ""
-            }
-        ]
-
     def test_should_post_documents_to_ente_or_profile(self):
-        url = reverse('api:documents-detail')
+        url = reverse('api:documents')
 
         fake_file = file.dummy_base64_file()
 
         data = {
-            "owner": self.ente.id_pub,
+            "dono": self.ente.id_pub,
             "nome": "Arquivo de Teste",
             "vencimento": "01/03/2015",
             "conteudo": fake_file
@@ -396,3 +390,23 @@ class DocumentoTest(APITestCase):
 
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_should_delete_documents(self):
+        url = reverse('api:documents')
+
+        fake_file = file.dummy_base64_file()
+
+        data = {
+            "dono": self.ente.id_pub,
+            "nome": "Arquivo de Teste",
+            "vencimento": "01/03/2015",
+            "conteudo": fake_file
+        }
+
+        response = self.client.post(url, data, format='json')
+
+        document = Documento.objects.filter(nome__icontains="Arquivo de Teste")[0]
+        url = reverse('api:documents-detail', kwargs={'uid': document.id_pub})
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

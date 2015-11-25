@@ -16,6 +16,7 @@ from .models import (
     Ente,
     ClassificacaoArtistica,
     PerfilArtistico,
+    Documento,
     define_entity_document,
 )
 
@@ -105,7 +106,7 @@ class PortfolioDetailView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class DocumentoDetailView(APIView):
+class DocumentoView(APIView):
     def post(self, request):
         serializer = DocumentoSerializer(data=request.data)
 
@@ -113,3 +114,10 @@ class DocumentoDetailView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DocumentoDetailView(APIView):
+    def delete(self, request, uid):
+        instance = Documento.objects.get(id_pub=uid)
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
