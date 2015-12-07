@@ -116,17 +116,15 @@ MEIDA_URL = '/media/'
 
 # Django Rest Framework
 REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'meta_id.core.renderers.UnicodeJSONRenderer',
+    ),
     'DATE_FORMAT': "%d/%m/%Y",
     'DATE_INPUT_FORMATS':["%d/%m/%Y", "%d/%m/%y"]
 }
 
 # Desabilitando o friendly browser view do Django Rest Framework
 if not settings.DEBUG:
-    REST_FRAMEWORK.update({
-        'DEFAULT_RENDERER_CLASSES': (
-            'rest_framework.renderers.JSONRenderer',
-        )
-    })
     REST_FRAMEWORK.update({
         'DEFAULT_PARSER_CLASSES': (
             'rest_framework.parsers.JSONParser',

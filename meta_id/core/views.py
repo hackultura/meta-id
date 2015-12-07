@@ -3,6 +3,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.parsers import MultiPartParser, FileUploadParser
 
 from .serializers import (
     EnteSerializer,
@@ -107,6 +108,7 @@ class PortfolioDetailView(APIView):
 
 
 class DocumentoView(APIView):
+    parser_classes = (MultiPartParser,)
     def post(self, request):
         serializer = DocumentoSerializer(data=request.data)
 
