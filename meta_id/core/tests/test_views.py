@@ -186,6 +186,9 @@ class EnteTest(APITestCase):
 
 class ClassificacoesTest(APITestCase):
     def setUp(self):
+
+        self.maxDiff = None
+
         self.url = reverse('api:classificacoes-list')
 
         ClassificacaoArtistica.objects.create(
@@ -210,6 +213,9 @@ class ClassificacoesTest(APITestCase):
 
 class PerfilArtisticoTest(APITestCase):
     def setUp(self):
+
+        self.maxDiff = None
+
         classificacoes = [
             {
                 "area": "Artes Visuais",
@@ -286,6 +292,9 @@ class PerfilArtisticoTest(APITestCase):
 
 class PortfolioPerfilTest(APITestCase):
     def setUp(self):
+        
+        self.maxDiff = None
+
         self.ente = mommy.make(Ente, nome="Fulano")
         self.perfil = mommy.make(PerfilArtistico, nome="Perfil Teste", ente=self.ente)
 
