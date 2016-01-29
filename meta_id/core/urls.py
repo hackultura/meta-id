@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 
 from .views import (
     EnteView,
@@ -18,6 +18,13 @@ urlpatterns = [
         EnteDetailView.as_view(), name='entes-detail'),
     url(r'^entes/(?P<slug>[\w-]+)/perfis/$',
         PerfilArtisticoView.as_view(), name='perfis'),
+    url(
+        r'^entes/(?P<slug>[\w-]+)/analises/',
+        include(
+            'meta_id.analise.urls',
+            namespace='analises'
+        ),
+    ),
     url(r'^perfis/(?P<slug>[\w-]+)/$',
         PerfilArtisticoDetailView.as_view(), name='perfis-detail'),
     url(r'^perfis/(?P<slug>[\w-]+)/portfolios/(?P<type>[\w]+)$',
