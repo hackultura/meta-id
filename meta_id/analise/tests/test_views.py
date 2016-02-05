@@ -92,8 +92,8 @@ class AnaliseEnteTest(APITestCase):
         data.update(self.dados_pessoais)
         data.update({"classificacoes": self.classificacoes})
 
-        user = self.client.post(self.ente_url, data, format='json')
-        self.assertEqual(user.status_code, status.HTTP_201_CREATED)
+        self.user = self.client.post(self.ente_url, data, format='json')
+        self.assertEqual(self.user.status_code, status.HTTP_201_CREATED)
 
     def test_access_url_to_analises(self):
 
@@ -102,7 +102,7 @@ class AnaliseEnteTest(APITestCase):
 
     def test_return_all_analises_from_an_ente(self):
 
-        data = json.loads(user.content.decode('utf-8'))
+        data = json.loads(self.user.content.decode('utf-8'))
         user_slug = self.nome["slug"]
         user_id_pub = data["id_pub"]
 
@@ -111,5 +111,4 @@ class AnaliseEnteTest(APITestCase):
             kwargs={'slug': user_slug}
         )
         response = self.client.get(url_analise_ente)
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)

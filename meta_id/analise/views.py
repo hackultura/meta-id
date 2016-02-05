@@ -1,11 +1,11 @@
 from django.shortcuts import render
 
-from rest_framework.views import APIView
+from rest_framework.views import APIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
 
 
-class AnaliseEnteView(APIView):
+class AnaliseDetailView(APIView):
 
     """
         AnaliseEnteView return data for a especific analyse for a given ente.
