@@ -95,16 +95,34 @@ class AnaliseEnteTest(APITestCase):
         self.user = self.client.post(self.ente_url, data, format='json')
         self.assertEqual(self.user.status_code, status.HTTP_201_CREATED)
 
+        self.ente_analyse = {}
+        self.ente_analyse.update({
+            "data": "01/02/2016",
+            "objeto": "ente",
+            "situacao": "aprovado",
+            "by_who": "/ente/decko",
+            "despacho": "Habilitacao efetivada. \n O ente apresenta\
+            documentacao que comprova atuacao na area",
+        })
+
     def test_access_url_to_analises(self):
 
         response = self.client.get(self.user_url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_insert_an_analyse_to_an_ente(self):
+
+        response = self.client.post(
+            self.user_url,
+            self.ente_analyse,
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.body, self.ente_analyse)
+
     def test_return_all_analises_from_an_ente(self):
 
-        data = json.loads(self.user.content.decode('utf-8'))
         user_slug = self.nome["slug"]
-        user_id_pub = data["id_pub"]
 
         url_analise_ente = reverse(
             'api:analises:list-ente',
