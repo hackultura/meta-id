@@ -91,11 +91,8 @@ class EnteSerializer(serializers.ModelSerializer):
         model = Ente
         fields = (
             'id_pub',
-            'slug',
-            'nome',
             'informacoes_geograficas',
             'telefone',
-            'email',
             'cpf',
             'nascimento',
             'classificacoes',
@@ -106,6 +103,7 @@ class EnteSerializer(serializers.ModelSerializer):
 
 class PerfilArtisticoSerializer(serializers.ModelSerializer):
     id_pub = serializers.UUIDField(required=False)
+
     class Meta:
         model = PerfilArtistico
         fields = (
@@ -125,6 +123,7 @@ class ClassificacaoSerializer(serializers.ModelSerializer):
 
 class PortfolioArquivoSerializer(serializers.ModelSerializer):
     conteudo = FileBase64Field(source='arquivo')
+
     class Meta:
         model = PortfolioArquivo
         fields = (
@@ -135,6 +134,7 @@ class PortfolioArquivoSerializer(serializers.ModelSerializer):
 
 class PortfolioImageSerializer(serializers.ModelSerializer):
     conteudo = FileBase64Field(source='imagem')
+
     class Meta:
         model = PortfolioImagem
         fields = (
@@ -145,6 +145,7 @@ class PortfolioImageSerializer(serializers.ModelSerializer):
 
 class PortfolioImagemAlbumSerializer(serializers.ModelSerializer):
     conteudo = FileBase64Field(source='imagem')
+
     class Meta:
         model = PortfolioImagemAlbum
         fields = (
@@ -169,6 +170,7 @@ class PortfolioAudioSerializer(serializers.ModelSerializer):
         "audio/ogg",
         "audio/x-ms-wma"
     ])
+
     class Meta:
         model = PortfolioAudio
         fields = (
@@ -189,6 +191,7 @@ class PortfolioVideoSerializer(serializers.ModelSerializer):
 
 class DocumentoSerializer(serializers.ModelSerializer):
     vencimento = serializers.DateField()
+
     class Meta:
         model = Documento
         fields = (

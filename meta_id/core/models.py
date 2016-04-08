@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 import uuid
-import os
 
-from django.conf import settings
 from django.db import models
+from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
-from django.core.validators import MinValueValidator
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
@@ -56,16 +54,14 @@ class Ente(models.Model):
     )
 
     id_pub = models.UUIDField(default=uuid.uuid4, editable=False)
-    nome = models.CharField(_('Nome'), max_length=100, blank=False)
-    slug = AutoSlugField(populate_from='nome', overwrite=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL,
+                                on_delete=models.CASCADE)
     informacoes_geograficas = JSONField(blank=True, null=True)
     telefone = JSONField(blank=True, null=True)
-    email = models.EmailField(_(u"E-mail"), blank=False)
     cpf = models.CharField(_(u"CPF"), max_length=15, blank=False)
     nascimento = models.DateField()
     classificacoes = JSONField()
     documentos = JSONField(blank=True)
-
 
     class Meta:
         verbose_name = "ente"
@@ -74,7 +70,7 @@ class Ente(models.Model):
     def __str__(self):
         return self.nome
 
-    def get_absolute_url():
+    def get_absolute_url(self):
         return reverse('core.views.entes', args=[str(self.id)])
 
 
@@ -189,7 +185,7 @@ class Documento(Conteudo):
         except Ente.DoesNotExist:
             pass
         try:
-           return PerfilArtistico.objects.get(id_pub=self.dono)
+            return PerfilArtistico.objects.get(id_pub=self.dono)
         except PerfilArtistico.DoesNotExist:
             raise ObjectDoesNotExist("Documento nao possui um owner.")
 

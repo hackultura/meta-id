@@ -2,10 +2,10 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-from django.conf import settings
 import postgres.fields
 import decimal
 import django.core.serializers.json
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
@@ -19,28 +19,28 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Parecer',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('texto_parecer', models.TextField(verbose_name='Parecer')),
                 ('decisao', models.IntegerField(choices=[(1, 'Favorável'), (2, 'Em Diligência'), (3, 'Desfavorável')], verbose_name='Decisão do parecerista')),
                 ('data_decisao', models.DateField(verbose_name='Data da Decisão')),
                 ('areas_atuacao', postgres.fields.JSONField(encode_kwargs={'cls': django.core.serializers.json.DjangoJSONEncoder}, decode_kwargs={'parse_float': decimal.Decimal}, verbose_name='Áreas de Atuação')),
             ],
             options={
-                'verbose_name': 'analise',
                 'verbose_name_plural': 'analises',
+                'verbose_name': 'analise',
             },
         ),
         migrations.CreateModel(
             name='Pedido',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('data_pedido', models.DateField(verbose_name='Data do Pedido')),
                 ('areas_atuacao', postgres.fields.JSONField(encode_kwargs={'cls': django.core.serializers.json.DjangoJSONEncoder}, decode_kwargs={'parse_float': decimal.Decimal}, verbose_name='Áreas de Atuação')),
                 ('ente', models.ForeignKey(to='core.Ente')),
             ],
             options={
-                'verbose_name': 'pedido',
                 'verbose_name_plural': 'pedidos',
+                'verbose_name': 'pedido',
             },
         ),
         migrations.AddField(
@@ -51,6 +51,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='parecer',
             name='responsavel',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL, blank=True, null=True),
+            field=models.ForeignKey(null=True, to=settings.AUTH_USER_MODEL, blank=True),
         ),
     ]

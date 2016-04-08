@@ -58,5 +58,5 @@ docs/_build/
 
 # PyBuilder
 target/
->>>>>>> 79f2b3d2e385cd5c5524113a7a32bccfa47aa70c
+.ropeproject
 .env
