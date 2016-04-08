@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -39,7 +40,7 @@ class EnteView(APIView):
 
 class EnteDetailView(APIView):
     def get(self, request, slug):
-        ente = Ente.objects.get(slug=slug)
+        ente = get_object_or_404(Ente, user__slug=slug)
         serializer = EnteSerializer(ente, context={'request': request})
         return Response(serializer.data)
 
@@ -66,13 +67,13 @@ class AtuacoesListView(APIView):
 
 class PerfilArtisticoView(APIView):
     def get(self, request, slug):
-        ente = Ente.objects.get(slug=slug)
+        ente = get_object_or_404(Ente, user__slug=slug)
         perfis = PerfilArtistico.objects.filter(ente=ente)
         serializer = PerfilArtisticoSerializer(perfis, many=True)
         return Response(serializer.data)
 
     def post(self, request, slug):
-        ente = Ente.objects.get(slug=slug)
+        ente = get_object_or_404(Ente, user__slug=slug)
         serializer = PerfilArtisticoSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(ente=ente)

@@ -68,7 +68,7 @@ class Ente(models.Model):
         verbose_name_plural = "entes"
 
     def __str__(self):
-        return self.nome
+        return self.user.name
 
     def get_absolute_url(self):
         return reverse('core.views.entes', args=[str(self.id)])
