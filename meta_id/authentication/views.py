@@ -38,7 +38,8 @@ class LoginView(views.APIView):
                 if user.is_active:
                     login(request, user)
 
-                    serialized = UserSerializer(user)
+                    serialized = UserSerializer(user,
+                                                context={'request': request})
 
                     return Response(serialized.data)
                 else:

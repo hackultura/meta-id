@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import re
+import bitmath
+
+from django.conf import settings
 from rest_framework import serializers
 from rest_localflavor.br.serializers import BRCPFField
 
@@ -121,25 +125,57 @@ class ClassificacaoSerializer(serializers.ModelSerializer):
         fields = ("area", "estilos",)
 
 
-class PortfolioArquivoSerializer(serializers.ModelSerializer):
-    conteudo = FileBase64Field(source='arquivo')
+class ConteudoMixin(object):
+    arquivo = serializers.FileField(max_length=255, write_only=True)
+    arquivo = serializers.SerializerMethodField()
+    filename = serializers.SerializerMethodField()
+    size = serializers.SerializerMethodField()
 
+    def _validate_file(self, file):
+        if file in [None, '']:
+            raise serializers.ValidationError(
+                "Ocorreu um erro no upload. Tente novamente")
+        elif file.content_type not in settings.ALLOWED_FILES:
+            raise serializers.ValidationError(
+                "Formato de arquivo inválido para o projeto.")
+        return True
+
+    def get_file(self, obj):
+        """
+        Trata a URL do documento
+        """
+        request = self.context.get('request')
+        is_secure = request._request.is_secure()
+        host = request._request.get_host()
+        if is_secure:
+            return "https://{url}{path}".format(url=host, path=obj.file.url)
+        else:
+            return "http://{url}{path}".format(url=host, path=obj.file.url)
+
+    def get_filename(self, obj):
+        filename = obj.file.name.split('/')[-1]
+        return re.sub('\_', ' ', filename)
+
+    def get_size(self, obj):
+        return bitmath.Byte(obj.file.size).best_prefix().format(
+            "{value:.2f} {unit}")
+
+
+class PortfolioArquivoSerializer(ConteudoMixin, serializers.ModelSerializer):
     class Meta:
         model = PortfolioArquivo
         fields = (
             'nome',
-            'conteudo',
+            'arquivo',
         )
 
 
-class PortfolioImageSerializer(serializers.ModelSerializer):
-    conteudo = FileBase64Field(source='imagem')
-
+class PortfolioImageSerializer(ConteudoMixin, serializers.ModelSerializer):
     class Meta:
         model = PortfolioImagem
         fields = (
             'descricao',
-            'conteudo',
+            'arquivo',
         )
 
 

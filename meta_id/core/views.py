@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.parsers import MultiPartParser, FileUploadParser
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from .serializers import (
     EnteSerializer,
@@ -19,7 +19,6 @@ from .models import (
     ClassificacaoArtistica,
     PerfilArtistico,
     Documento,
-    define_entity_document,
 )
 
 
@@ -83,12 +82,12 @@ class PerfilArtisticoView(APIView):
 
 class PerfilArtisticoDetailView(APIView):
     def get(self, request, slug):
-        perfil = PerfilArtistico.objects.get(slug=slug)
+        perfil = get_object_or_404(PerfilArtistico, slug=slug)
         serializer = PerfilArtisticoSerializer(perfil)
         return Response(serializer.data)
 
     def put(self, request, slug):
-        perfil = PerfilArtistico.objects.get(slug=slug)
+        perfil = get_object_or_404(PerfilArtistico, slug=slug)
         serializer = PerfilArtisticoSerializer(perfil, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -96,9 +95,11 @@ class PerfilArtisticoDetailView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class PortfolioDetailView(APIView):
+class PortfolioView(APIView):
+    parser_classes = (MultiPartParser, FormParser,)
+
     def post(self, request, type, slug):
-        perfil = PerfilArtistico.objects.get(slug=slug)
+        perfil = get_object_or_404(PerfilArtistico, slug=slug)
         serializer = create_serializer_portfolio_type(
             type, data=request.data
         )
@@ -109,7 +110,8 @@ class PortfolioDetailView(APIView):
 
 
 class DocumentoView(APIView):
-    parser_classes = (MultiPartParser,)
+    parser_classes = (MultiPartParser, FormParser,)
+
     def post(self, request):
         serializer = DocumentoSerializer(data=request.data)
 
