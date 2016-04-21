@@ -3,7 +3,11 @@
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 
-from .models import Documento
+from .models import (
+    Documento, PortfolioArquivo,
+    PortfolioImagemAlbum, PortfolioAudio,
+    PortfolioVideo,
+)
 
 
 def _search_document(documentos, file):
@@ -16,8 +20,7 @@ def _search_document(documentos, file):
     return None
 
 
-@receiver(post_save, sender=Documento)
-def register_content_by_ente_or_profile(sender, instance, created, **kwargs):
+def _register_content(instance):
     """
     Captura os metadados e uid do documento inserido e salva
     no campo JSON do modelo de ente ou perfil.
@@ -37,6 +40,31 @@ def register_content_by_ente_or_profile(sender, instance, created, **kwargs):
         "vencimento": instance.vencimento
     })
     owner.save()
+
+
+@receiver(post_save, sender=Documento)
+def register_content_by_ente(sender, instance, created, **kwargs):
+    _register_content(instance)
+
+
+@receiver(post_save, sender=PortfolioArquivo)
+def register_file_by_profile(sender, instance, created, **kwargs):
+    _register_content(instance)
+
+
+@receiver(post_save, sender=PortfolioImagemAlbum)
+def register_imagealbum_by_profile(sender, instance, created, **kwargs):
+    _register_content(instance)
+
+
+@receiver(post_save, sender=PortfolioAudio)
+def register_audio_by_profile(sender, instance, created, **kwargs):
+    _register_content(instance)
+
+
+@receiver(post_save, sender=PortfolioVideo)
+def register_video_by_profile(sender, instance, created, **kwargs):
+    _register_content(instance)
 
 
 # TODO: Fique registrado se caso essa tarefa for custosa
