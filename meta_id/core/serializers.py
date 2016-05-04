@@ -165,15 +165,19 @@ class PortfolioArquivoSerializer(ConteudoMixin, serializers.ModelSerializer):
     class Meta:
         model = PortfolioArquivo
         fields = (
+            'perfil',
             'nome',
             'arquivo',
         )
 
 
 class PortfolioImageSerializer(ConteudoMixin, serializers.ModelSerializer):
+    arquivo = serializers.FileField(source="imagem")
+
     class Meta:
         model = PortfolioImagem
         fields = (
+            'perfil',
             'descricao',
             'arquivo',
         )
@@ -185,6 +189,7 @@ class PortfolioImagemAlbumSerializer(serializers.ModelSerializer):
     class Meta:
         model = PortfolioImagemAlbum
         fields = (
+            'perfil',
             'conteudo',
         )
 
@@ -200,18 +205,13 @@ class PortfolioAlbumSerializer(serializers.ModelSerializer):
         )
 
 
-class PortfolioAudioSerializer(serializers.ModelSerializer):
-    conteudo = FileBase64Field(source='audio', allow_types=[
-        "audio/mp3",
-        "audio/ogg",
-        "audio/x-ms-wma"
-    ])
-
+class PortfolioAudioSerializer(ConteudoMixin, serializers.ModelSerializer):
     class Meta:
         model = PortfolioAudio
         fields = (
+            'perfil',
             'nome',
-            'conteudo',
+            'audio',
         )
 
 
@@ -219,6 +219,7 @@ class PortfolioVideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = PortfolioVideo
         fields = (
+            'perfil',
             'nome',
             'url',
             'plataforma',

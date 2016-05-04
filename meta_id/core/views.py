@@ -100,6 +100,7 @@ class PortfolioView(APIView):
 
     def post(self, request, type, slug):
         perfil = get_object_or_404(PerfilArtistico, slug=slug)
+        request.data['perfil'] = perfil.pk
         serializer = create_serializer_portfolio_type(
             type, data=request.data
         )

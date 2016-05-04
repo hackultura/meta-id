@@ -22,7 +22,8 @@ def generate_portfolio_filepath(instance, filename):
     :param filename:
         Nome do arquivo que acabou de fazer upload
     """
-    path = "portfolios/{type}/{filename}".format(
+    path = "portfolios/{profile}/{type}/{filename}".format(
+        profile=instance.perfil.slug,
         type=instance._type,
         filename=filename
     )
@@ -80,8 +81,7 @@ class PerfilArtistico(models.Model):
     nome = models.CharField(_(u"Nome Artístico"), max_length=60)
     slug = AutoSlugField(populate_from='nome', overwrite=True)
     historico = models.CharField(_(u"Breve Histórico"), max_length=255)
-    # TODO: Implementar campo documentos
-    # documentos = JSONField()
+    #documentos = JSONField()
 
 
 class Conteudo(models.Model):
@@ -89,6 +89,7 @@ class Conteudo(models.Model):
     Modelo abstrato que traz em comum todo tipo de conteudo
     anexado nas entidades do sistema.
     """
+    perfil = models.ForeignKey('PerfilArtistico')
     id_pub = models.UUIDField(default=uuid.uuid4, editable=False)
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
