@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 from .serializers import (
     EnteSerializer,
@@ -83,7 +83,8 @@ class PerfilArtisticoView(APIView):
 class PerfilArtisticoDetailView(APIView):
     def get(self, request, slug):
         perfil = get_object_or_404(PerfilArtistico, slug=slug)
-        serializer = PerfilArtisticoSerializer(perfil)
+        serializer = PerfilArtisticoSerializer(perfil,
+                                               context={'request': request})
         return Response(serializer.data)
 
     def put(self, request, slug):
@@ -96,7 +97,7 @@ class PerfilArtisticoDetailView(APIView):
 
 
 class PortfolioView(APIView):
-    parser_classes = (MultiPartParser, FormParser,)
+    parser_classes = (MultiPartParser, FormParser, JSONParser,)
 
     def post(self, request, type, slug):
         perfil = get_object_or_404(PerfilArtistico, slug=slug)

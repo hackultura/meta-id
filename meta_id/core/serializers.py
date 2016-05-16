@@ -105,20 +105,6 @@ class EnteSerializer(serializers.ModelSerializer):
         read_only_fields = ('slug')
 
 
-class PerfilArtisticoSerializer(serializers.ModelSerializer):
-    id_pub = serializers.UUIDField(required=False)
-
-    class Meta:
-        model = PerfilArtistico
-        fields = (
-            "id_pub",
-            "slug",
-            "nome",
-            "historico",
-        )
-        read_only_fields = ("id_pub", "slug",)
-
-
 class ClassificacaoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassificacaoArtistica
@@ -131,6 +117,14 @@ class ConteudoMixin(object):
     filename = serializers.SerializerMethodField()
     size = serializers.SerializerMethodField()
 
+    class Meta:
+        fields = (
+            "arquivo",
+            "filename",
+            "size",
+        )
+        read_only_fields = ("arquivo", "filename", "size",)
+
     def _validate_file(self, file):
         if file in [None, '']:
             raise serializers.ValidationError(
@@ -140,7 +134,7 @@ class ConteudoMixin(object):
                 "Formato de arquivo inválido para o projeto.")
         return True
 
-    def get_file(self, obj):
+    def get_arquivo(self, obj):
         """
         Trata a URL do documento
         """
@@ -148,39 +142,41 @@ class ConteudoMixin(object):
         is_secure = request._request.is_secure()
         host = request._request.get_host()
         if is_secure:
-            return "https://{url}{path}".format(url=host, path=obj.file.url)
+            return "https://{url}{path}".format(url=host, path=obj.arquivo.url)
         else:
-            return "http://{url}{path}".format(url=host, path=obj.file.url)
+            return "http://{url}{path}".format(url=host, path=obj.arquivo.url)
 
     def get_filename(self, obj):
-        filename = obj.file.name.split('/')[-1]
+        filename = obj.arquivo.name.split('/')[-1]
         return re.sub('\_', ' ', filename)
 
     def get_size(self, obj):
-        return bitmath.Byte(obj.file.size).best_prefix().format(
+        return bitmath.Byte(obj.arquivo.size).best_prefix().format(
             "{value:.2f} {unit}")
 
 
 class PortfolioArquivoSerializer(ConteudoMixin, serializers.ModelSerializer):
-    class Meta:
+    class Meta(ConteudoMixin.Meta):
         model = PortfolioArquivo
         fields = (
             'perfil',
             'nome',
             'arquivo',
         )
+        extra_kwargs = {'perfil': {'write_only': True}}
 
 
 class PortfolioImageSerializer(ConteudoMixin, serializers.ModelSerializer):
     arquivo = serializers.FileField(source="imagem")
 
-    class Meta:
+    class Meta(ConteudoMixin.Meta):
         model = PortfolioImagem
         fields = (
             'perfil',
             'descricao',
             'arquivo',
         )
+        extra_kwargs = {'perfil': {'write_only': True}}
 
 
 class PortfolioImagemAlbumSerializer(serializers.ModelSerializer):
@@ -213,6 +209,7 @@ class PortfolioAudioSerializer(ConteudoMixin, serializers.ModelSerializer):
             'nome',
             'audio',
         )
+        extra_kwargs = {'perfil': {'write_only': True}}
 
 
 class PortfolioVideoSerializer(serializers.ModelSerializer):
@@ -224,6 +221,7 @@ class PortfolioVideoSerializer(serializers.ModelSerializer):
             'url',
             'plataforma',
         )
+        extra_kwargs = {'perfil': {'write_only': True}}
 
 
 class DocumentoSerializer(serializers.ModelSerializer):
@@ -237,3 +235,25 @@ class DocumentoSerializer(serializers.ModelSerializer):
             'vencimento',
             'arquivo',
         )
+
+
+class PerfilArtisticoSerializer(serializers.ModelSerializer):
+    id_pub = serializers.UUIDField(required=False)
+    arquivos = PortfolioArquivoSerializer(many=True, read_only=True)
+    imagens = PortfolioImageSerializer(many=True, read_only=True)
+    audios = PortfolioAudioSerializer(many=True, read_only=True)
+    videos = PortfolioVideoSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = PerfilArtistico
+        fields = (
+            "id_pub",
+            "slug",
+            "nome",
+            "historico",
+            "arquivos",
+            "imagens",
+            "audios",
+            "videos",
+        )
+        read_only_fields = ("id_pub", "slug",)

@@ -115,7 +115,7 @@ AUTH_USER_MODEL = 'authentication.User'
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEIDA_URL = '/media/'
+MEDIA_URL = '/media/'
 
 ALLOWED_FILES = [
     'application/pdf',

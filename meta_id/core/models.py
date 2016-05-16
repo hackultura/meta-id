@@ -89,7 +89,6 @@ class Conteudo(models.Model):
     Modelo abstrato que traz em comum todo tipo de conteudo
     anexado nas entidades do sistema.
     """
-    perfil = models.ForeignKey('PerfilArtistico')
     id_pub = models.UUIDField(default=uuid.uuid4, editable=False)
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
@@ -110,6 +109,7 @@ class ConteudoImagemMixin(models.Model):
 
 
 class PortfolioArquivo(Conteudo):
+    perfil = models.ForeignKey('PerfilArtistico', related_name='arquivos')
     nome = models.CharField(max_length=255, blank=False)
     arquivo = models.FileField(upload_to=generate_portfolio_filepath)
 
@@ -120,6 +120,7 @@ class PortfolioArquivo(Conteudo):
 
 
 class PortfolioImagem(ConteudoImagemMixin, Conteudo):
+    perfil = models.ForeignKey('PerfilArtistico', related_name='imagens')
     descricao = models.CharField(max_length=255, blank=False)
 
     @property
@@ -142,6 +143,7 @@ class PortfolioAlbum(Conteudo):
 
 
 class PortfolioAudio(Conteudo):
+    perfil = models.ForeignKey('PerfilArtistico', related_name='audios')
     nome = models.CharField(max_length=255, blank=False)
     audio = models.FileField(upload_to=generate_portfolio_filepath)
 
@@ -152,14 +154,10 @@ class PortfolioAudio(Conteudo):
 
 
 class PortfolioVideo(Conteudo):
-    PLATFORM_CHOICES = Choices(
-        ("youtube", u"Youtube"),
-        ("vimeo", u"Vimeo"),
-    )
+    perfil = models.ForeignKey('PerfilArtistico', related_name='videos')
     nome = models.CharField(max_length=255, blank=False)
     url = models.URLField(max_length=255, blank=False)
-    plataforma = models.CharField(max_length=30, choices=PLATFORM_CHOICES,
-                                  blank=False)
+    plataforma = models.CharField(max_length=30, blank=False)
 
     @property
     def _type(self):
