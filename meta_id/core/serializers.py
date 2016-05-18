@@ -44,7 +44,7 @@ def generate_atuacao_json():
     return atuacoes
 
 
-def create_serializer_portfolio_type(type, **kwargs):
+def create_serializer_portfolio_type(type, *args, **kwargs):
     """
     Cria uma instancia de um serializer de portfolios,
     baseado no tipo de conteudo passado no parametro type.
@@ -56,15 +56,15 @@ def create_serializer_portfolio_type(type, **kwargs):
     """
     # TODO: Buscar uma melhor solução, do que esses ifs
     if type == "file":
-        return PortfolioArquivoSerializer(**kwargs)
+        return PortfolioArquivoSerializer(*args, **kwargs)
     if type == "image":
-        return PortfolioImageSerializer(**kwargs)
+        return PortfolioImageSerializer(*args, **kwargs)
     if type == "album":
-        return PortfolioAlbumSerializer(**kwargs)
+        return PortfolioAlbumSerializer(*args, **kwargs)
     if type == "audio":
-        return PortfolioAudioSerializer(**kwargs)
+        return PortfolioAudioSerializer(*args, **kwargs)
     if type == "video":
-        return PortfolioVideoSerializer(**kwargs)
+        return PortfolioVideoSerializer(*args, **kwargs)
     else:
         raise ValueError("Tipo de conteúdo do serializer inválido")
 
@@ -159,6 +159,7 @@ class PortfolioArquivoSerializer(ConteudoMixin, serializers.ModelSerializer):
     class Meta(ConteudoMixin.Meta):
         model = PortfolioArquivo
         fields = (
+            'id_pub',
             'perfil',
             'nome',
             'arquivo',
@@ -172,6 +173,7 @@ class PortfolioImageSerializer(ConteudoMixin, serializers.ModelSerializer):
     class Meta(ConteudoMixin.Meta):
         model = PortfolioImagem
         fields = (
+            'id_pub',
             'perfil',
             'descricao',
             'arquivo',
@@ -205,6 +207,7 @@ class PortfolioAudioSerializer(ConteudoMixin, serializers.ModelSerializer):
     class Meta:
         model = PortfolioAudio
         fields = (
+            'id_pub',
             'perfil',
             'nome',
             'audio',
@@ -216,6 +219,7 @@ class PortfolioVideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = PortfolioVideo
         fields = (
+            'id_pub',
             'perfil',
             'nome',
             'url',

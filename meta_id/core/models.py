@@ -3,6 +3,7 @@ import uuid
 
 from django.db import models
 from django.conf import settings
+from django.http import Http404
 from django.contrib.postgres.fields import ArrayField
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ObjectDoesNotExist
@@ -41,6 +42,31 @@ def define_entity_document(entity, slug):
         return PerfilArtistico.objects.get(slug=slug)
     else:
         raise ValueError("Entidade incorreta para a busca.")
+
+
+def get_portfolio_or_404(type=None, uid=None):
+    """
+    Retorna o portfolio selecionado pelo seu uid, caso contrario
+    retorna o objeto Http404.
+
+    :param type:
+        Define o tipo do conteudo (file, image, album, audio, video)
+    :param uid:
+        UID do portfolio
+    """
+    try:
+        if type == "file":
+            return PortfolioArquivo.objects.get(id_pub=uid)
+        if type == "image":
+            return PortfolioImagem.objects.get(id_pub=uid)
+        if type == "audio":
+            return PortfolioAudio.objects.get(id_pub=uid)
+        if type == "video":
+            return PortfolioVideo.objects.get(id_pub=uid)
+        else:
+            raise ValueError("Tipo de conteúdo inválido para pesquisa.")
+    except ObjectDoesNotExist:
+        raise Http404()
 
 
 class Ente(models.Model):

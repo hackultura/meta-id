@@ -12,13 +12,14 @@ from .serializers import (
     PerfilArtisticoSerializer,
     DocumentoSerializer,
     generate_atuacao_json,
-    create_serializer_portfolio_type,
+    create_serializer_portfolio_type
 )
 from .models import (
     Ente,
     ClassificacaoArtistica,
     PerfilArtistico,
     Documento,
+    get_portfolio_or_404
 )
 
 
@@ -109,6 +110,18 @@ class PortfolioView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PortfolioDetailView(APIView):
+    def get(self, request, slug, type, uid):
+        portfolio = get_portfolio_or_404(type=type, uid=uid)
+        serializer = create_serializer_portfolio_type(type, portfolio)
+        return Response(serializer.data)
+
+    def delete(self, request, slug, type, uid):
+        portfolio = get_portfolio_or_404(type=type, uid=uid)
+        portfolio.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class DocumentoView(APIView):
