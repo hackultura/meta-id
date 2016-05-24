@@ -113,17 +113,18 @@ class ClassificacaoSerializer(serializers.ModelSerializer):
 
 class ConteudoMixin(object):
     arquivo = serializers.FileField(max_length=255, write_only=True)
-    arquivo = serializers.SerializerMethodField()
+    url = serializers.SerializerMethodField()
     filename = serializers.SerializerMethodField()
     size = serializers.SerializerMethodField()
 
     class Meta:
         fields = (
             "arquivo",
+            "url",
             "filename",
             "size",
         )
-        read_only_fields = ("arquivo", "filename", "size",)
+        read_only_fields = ("url", "filename", "size",)
 
     def _validate_file(self, file):
         if file in [None, '']:
@@ -134,7 +135,7 @@ class ConteudoMixin(object):
                 "Formato de arquivo inválido para o projeto.")
         return True
 
-    def get_arquivo(self, obj):
+    def get_url(self, obj):
         """
         Trata a URL do documento
         """
@@ -147,15 +148,31 @@ class ConteudoMixin(object):
             return "http://{url}{path}".format(url=host, path=obj.arquivo.url)
 
     def get_filename(self, obj):
-        filename = obj.arquivo.name.split('/')[-1]
+        if hasattr(obj, 'arquivo'):
+            filename = obj.arquivo.name.split('/')[-1]
+        if hasattr(obj, 'imagem'):
+            filename = obj.imagem.name.split('/')[-1]
+        if hasattr(obj, 'audio'):
+            filename = obj.audio.name.split('/')[-1]
         return re.sub('\_', ' ', filename)
 
     def get_size(self, obj):
-        return bitmath.Byte(obj.arquivo.size).best_prefix().format(
-            "{value:.2f} {unit}")
+        if hasattr(obj, 'arquivo'):
+            size = bitmath.Byte(obj.arquivo.size).best_prefix().format(
+                "{value:.2f} {unit}")
+        if hasattr(obj, 'imagem'):
+            size = bitmath.Byte(obj.imagem.size).best_prefix().format(
+                "{value:.2f} {unit}")
+        if hasattr(obj, 'audio'):
+            size = bitmath.Byte(obj.audio.size).best_prefix().format(
+                "{value:.2f} {unit}")
+        return size
 
 
 class PortfolioArquivoSerializer(ConteudoMixin, serializers.ModelSerializer):
+    filename = serializers.SerializerMethodField()
+    size = serializers.SerializerMethodField()
+
     class Meta(ConteudoMixin.Meta):
         model = PortfolioArquivo
         fields = (
@@ -163,12 +180,16 @@ class PortfolioArquivoSerializer(ConteudoMixin, serializers.ModelSerializer):
             'perfil',
             'nome',
             'arquivo',
+            'filename',
+            'size',
         )
         extra_kwargs = {'perfil': {'write_only': True}}
 
 
 class PortfolioImageSerializer(ConteudoMixin, serializers.ModelSerializer):
     arquivo = serializers.FileField(source="imagem")
+    filename = serializers.SerializerMethodField()
+    size = serializers.SerializerMethodField()
 
     class Meta(ConteudoMixin.Meta):
         model = PortfolioImagem
@@ -177,6 +198,8 @@ class PortfolioImageSerializer(ConteudoMixin, serializers.ModelSerializer):
             'perfil',
             'descricao',
             'arquivo',
+            'filename',
+            'size',
         )
         extra_kwargs = {'perfil': {'write_only': True}}
 
@@ -204,6 +227,9 @@ class PortfolioAlbumSerializer(serializers.ModelSerializer):
 
 
 class PortfolioAudioSerializer(ConteudoMixin, serializers.ModelSerializer):
+    filename = serializers.SerializerMethodField()
+    size = serializers.SerializerMethodField()
+
     class Meta:
         model = PortfolioAudio
         fields = (
@@ -211,6 +237,8 @@ class PortfolioAudioSerializer(ConteudoMixin, serializers.ModelSerializer):
             'perfil',
             'nome',
             'audio',
+            'filename',
+            'size',
         )
         extra_kwargs = {'perfil': {'write_only': True}}
 

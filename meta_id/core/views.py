@@ -69,7 +69,8 @@ class PerfilArtisticoView(APIView):
     def get(self, request, slug):
         ente = get_object_or_404(Ente, user__slug=slug)
         perfis = PerfilArtistico.objects.filter(ente=ente)
-        serializer = PerfilArtisticoSerializer(perfis, many=True)
+        serializer = PerfilArtisticoSerializer(perfis, many=True,
+                                               context={'request': request})
         return Response(serializer.data)
 
     def post(self, request, slug):
@@ -95,6 +96,11 @@ class PerfilArtisticoDetailView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, slug):
+        perfil = get_object_or_404(PerfilArtistico, slug=slug)
+        perfil.delete()
+        return Response(status=status.HTTP_200_OK)
 
 
 class PortfolioView(APIView):

@@ -20,14 +20,15 @@ def custom_exception_handler(exc, context):
                 "Registro não encontrado. Verifique se não foi removido."
             ]
         else:
-            for field, value in exc.detail.items():
-                if isinstance(value, list):
-                    errors[field] = value[0]
-                elif isinstance(value, OrderedDict):
-                    _iter_errors_dict(value, errors)
-                elif isinstance(value, str):
-                    errors[field] = value
-            response.data['errors'] = errors
+            if isinstance(exc, dict):
+                for field, value in exc.detail.items():
+                    if isinstance(value, list):
+                        errors[field] = value[0]
+                    elif isinstance(value, OrderedDict):
+                        _iter_errors_dict(value, errors)
+                    elif isinstance(value, str):
+                        errors[field] = value
+                response.data['errors'] = errors
 
         response.data['status'] = response.status_code
 

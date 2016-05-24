@@ -1,16 +1,26 @@
 # -*- coding: utf-8 -*-
 import uuid
+import os
+import re
+import shutil
 
 from django.db import models
 from django.conf import settings
 from django.http import Http404
 from django.contrib.postgres.fields import ArrayField
+from django.db.models.signals import post_save, pre_delete
+from django.dispatch.dispatcher import receiver
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django_extensions.db.fields import AutoSlugField
 from postgres.fields import JSONField
 from model_utils import Choices
+
+from meta_id.core.signals import (
+    remove_portfolio_file,
+    remove_portfolio_folder,
+)
 
 
 def generate_portfolio_filepath(instance, filename):
@@ -23,8 +33,10 @@ def generate_portfolio_filepath(instance, filename):
     :param filename:
         Nome do arquivo que acabou de fazer upload
     """
-    path = "portfolios/{profile}/{type}/{filename}".format(
-        profile=instance.perfil.slug,
+    cpf = re.sub(r'\W', '_', instance.perfil.ente.cpf)
+    path = "portfolios/{ente}/{profile_uid}/{type}/{filename}".format(
+        ente=cpf,
+        profile_uid=instance.perfil.id_pub,
         type=instance._type,
         filename=filename
     )
@@ -107,7 +119,10 @@ class PerfilArtistico(models.Model):
     nome = models.CharField(_(u"Nome Artístico"), max_length=60)
     slug = AutoSlugField(populate_from='nome', overwrite=True)
     historico = models.CharField(_(u"Breve Histórico"), max_length=255)
-    #documentos = JSONField()
+
+    def delete(self, *args, **kwargs):
+        remove_portfolio_folder.send(sender=self.__class__, instance=self)
+        super(PerfilArtistico, self).delete(*args, **kwargs)
 
 
 class Conteudo(models.Model):
@@ -121,6 +136,10 @@ class Conteudo(models.Model):
 
     class Meta:
         abstract = True
+
+    def delete(self, *args, **kwargs):
+        remove_portfolio_file.send(sender=self.__class__, instance=self)
+        super(Conteudo, self).delete(*args, **kwargs)
 
 
 class ConteudoImagemMixin(models.Model):
@@ -233,7 +252,73 @@ class Registro(models.Model):
         return reverse('core.views.registros')
 
 
-from .signals import (
-    register_content_by_ente_or_profile,
-    remove_content_of_owner
-)
+# Signals
+@receiver(remove_portfolio_file)
+def delete_portfolio_file(sender, instance, **kwargs):
+    if hasattr(instance, 'arquivo'):
+        file = instance.arquivo
+    elif hasattr(instance, 'imagem'):
+        file = instance.imagem
+    elif hasattr(instance, 'audio'):
+        file = instance.audio
+
+    file_path = os.path.join(settings.MEDIA_ROOT, file.name)
+    if os.path.exists(file_path):
+        os.remove(os.path.join(settings.MEDIA_ROOT, file.name))
+
+
+@receiver(remove_portfolio_folder)
+def delete_portfolio_folder(sender, instance, **kwargs):
+    slug = instance.slug
+    path = "portfolios/{0}".format(slug)
+    shutil.rmtree(os.path.join(settings.MEDIA_ROOT, path))
+
+
+def _search_document(documentos, file):
+    file = file.split("/")[-1]
+    filename, format = file.split(".")
+
+    for documento in documentos:
+        if documento.get("arquivo") == filename:
+            return documento
+    return None
+
+
+@receiver(post_save, sender=Documento)
+def register_content_by_ente_or_profile(sender, instance, created, **kwargs):
+    """
+    Captura os metadados e uid do documento inserido e salva
+    no campo JSON do modelo de ente ou perfil.
+    """
+    owner = instance._get_owner()
+    if not isinstance(owner.documentos, list):
+        owner.documentos = []
+
+    filename = instance.arquivo.name.split("/")[-1]
+    filename, format = filename.split(".")
+    owner.documentos.append({
+        "nome": instance.nome,
+        "arquivo": filename,
+        "formato": format,
+        "tamanho": instance.arquivo.size,
+        "enviado_em": instance.criado_em,
+        "vencimento": instance.vencimento
+    })
+    owner.save()
+
+
+# TODO: Fique registrado se caso essa tarefa for custosa
+# pela quantidade de documentos futuramente, considere isso
+# uma tarefa para o celery.
+@receiver(pre_delete, sender=Documento)
+def remove_content_of_owner(sender, instance, **kwargs):
+    """
+    Antes da remocao do conteudo, ele e retirado do JSON
+    de documentacao do ente ou perfil.
+    """
+    owner = instance._get_owner()
+    documentos = owner.documentos
+    resultado = _search_document(documentos, instance.arquivo.name)
+    documentos.remove(resultado)
+    owner.documentos = documentos
+    owner.save()
