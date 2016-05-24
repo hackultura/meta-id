@@ -30,6 +30,8 @@ class UserManager(BaseUserManager):
         user = self.create_user(email, password, **kwargs)
 
         user.is_admin = True
+        user.is_superuser = True
+        user.is_staff = True
         user.save()
 
         return user

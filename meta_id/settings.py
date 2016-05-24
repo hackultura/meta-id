@@ -54,6 +54,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'django_extensions',
+    'oauth2_provider',
     'rest_framework',
     'rest_localflavor',
     'debug_toolbar',
@@ -196,7 +197,11 @@ REST_FRAMEWORK = {
     'DATE_FORMAT': "%d/%m/%Y",
     'DATE_INPUT_FORMATS': ["%d/%m/%Y", "%d/%m/%y"],
     'PAGE_SIZE': 100,
-    'EXCEPTION_HANDLER': 'meta_id.core.exceptions.custom_exception_handler'
+    'EXCEPTION_HANDLER': 'meta_id.core.exceptions.custom_exception_handler',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
+    )
 }
 
 # Desabilitando o friendly browser view do Django Rest Framework

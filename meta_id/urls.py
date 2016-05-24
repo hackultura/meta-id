@@ -6,6 +6,8 @@ from django.conf import settings
 urlpatterns = patterns(
     '',
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^oauth/',
+        include('oauth2_provider.urls', namespace='oauth2_provider')),
     url(r'^api/v1/auth/', include('meta_id.authentication.urls',
                                   namespace='auth')),
     url(r'^api/v1/', include('meta_id.core.urls', namespace='api')),
