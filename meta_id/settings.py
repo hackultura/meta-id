@@ -111,6 +111,8 @@ USE_TZ = True
 # Authentication
 AUTH_USER_MODEL = 'authentication.User'
 LOGIN_URL = '/login/'
+LOGOUT_REDIRECT_URL = '/login/'
+LOGIN_REDIRECT_URL = '/oauth/applications/'
 
 # Templates
 TEMPLATES = [

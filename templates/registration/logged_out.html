@@ -1,0 +1,10 @@
+{% extends "oauth2_provider/base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="block-center">
+	<h2 class="block-center-heading">Seu usuário foi deslogado. Caso ainda
+		deseje acessar sua página de aplicações, faça seu login novamente.</h2>
+	<a class="btn btn-success" href="{% url 'login' %}">Faça seu login novamente</a>
+</div>
+{% endblock content %}
