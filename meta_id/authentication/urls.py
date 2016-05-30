@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from meta_id.authentication.views import (
     UserViewSet,
     LoginView,
-    ChangePasswordView
+    ChangePasswordView,
 )
 
 router = DefaultRouter()

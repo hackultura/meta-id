@@ -1,0 +1,74 @@
+{% extends "oauth2_provider/base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+{% if form.errors %}
+<div class="alert alert-danger" role="alert">
+	<p>Seu e-mail ou senha estão incorretos. Tente novamente.</p>
+</div>
+{% endif %}
+
+{% if next %}
+{% if user.is_authenticated %}
+<div class="alert alert-warning" role="alert">
+	<p>Sua conta não tem acesso para essa página. Para continuar, faça o login usando outra conta com permissão.</p>
+</div>
+{% else %}
+<div class="alert alert-warning" role="alert">
+	<p>Por favor, faça o login para acessar essa página</p>
+</div>
+{% endif %}
+{% endif %}
+
+<div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+	<div class="panel panel-info" >
+		<div class="panel-heading">
+			<div class="panel-title">Meta ID</div>
+			<!--div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="{% url 'password_reset'%}">Perdeu a senha?</a></div-->
+		</div>
+
+		<div style="padding-top:30px" class="panel-body" >
+
+			<div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
+
+			<form id="loginform" method="POST" action="{% url 'login' %}" class="form-horizontal" role="form">
+				{% csrf_token %}
+				<input type="hidden" name="next" value="{{ next }}" />
+
+				<div style="margin-bottom: 25px" class="input-group">
+					<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+					{% render_field form.username placeholder="E-mail" class="form-control" %}
+				</div>
+
+				<div style="margin-bottom: 25px" class="input-group">
+					<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+					{% render_field form.password placeholder="Senha" class="form-control" %}
+				</div>
+
+				<div style="margin-top:10px" class="form-group">
+					<!-- Button -->
+
+					<div class="col-sm-12 controls">
+						<div>
+							<button id="btn-signup" type="submit" class="btn btn-info">Acessar</button>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<div class="col-md-12 control">
+						<div style="border-top: 1px solid#888; padding-top:15px; font-size:85%" >
+							Não tenho uma conta?
+							<a href="{% url 'register' %}"> Faça seu cadastro </a>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+</div>
+
+{% endblock %}

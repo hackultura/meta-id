@@ -58,6 +58,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'rest_localflavor',
     'debug_toolbar',
+    'widget_tweaks',
     'test_without_migrations',
 
     'meta_id.authentication',
@@ -109,6 +110,24 @@ USE_TZ = True
 
 # Authentication
 AUTH_USER_MODEL = 'authentication.User'
+LOGIN_URL = '/login/'
+
+# Templates
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
@@ -255,4 +274,3 @@ RAVEN_CONFIG = {
         # release based on the git info.
         'release': raven.fetch_git_sha(BASE_DIR),
 }
-

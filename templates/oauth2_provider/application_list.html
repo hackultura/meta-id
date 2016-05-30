@@ -1,0 +1,37 @@
+{% extends "oauth2_provider/base.html" %}
+
+{% load i18n %}
+{% block content %}
+<div class="block-center">
+	<h3 class="block-center-heading">{% trans "Suas Aplicações" %}</h3>
+	{% if applications %}
+
+	<ul>
+		<table class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<td>Nome da Aplicação</td>
+					<td>Tipo do Cliente</td>
+					<td>Client ID</td>
+					<td>Redirect URIs</td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for application in applications %}
+				<tr>
+					<td><a href="{{application.get_absolute_url}}">{{application.name}}</a></td>
+					<td>{{application.client_type}}</td>
+					<td>{{application.client_id}}</td>
+					<td>{{application.redirect_uris}}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</ul>
+
+	<a class="btn btn-success" href="{% url "oauth2_provider:register" %}">Nova Aplicação</a>
+	{% else %}
+	<p>{% trans "Nenhuma aplicação definida" %}. <a href="{% url 'oauth2_provider:register' %}">{% trans "Clique aqui" %}</a> {% trans "se deseja registrar uma aplicação." %}</p>
+	{% endif %}
+</div>
+{% endblock content %}

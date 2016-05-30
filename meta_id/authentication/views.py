@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import authenticate, login
+from django.views.generic.edit import CreateView
+
 from rest_framework import viewsets, status, views
 from rest_framework.response import Response
+
 from meta_id.authentication.models import User
+from meta_id.authentication.forms import RegisterForm
 from meta_id.authentication.serializers import (
     UserSerializer, LoginSerializer, ChangePasswordSerializer
 )
@@ -51,3 +55,8 @@ class LoginView(views.APIView):
                     'message': 'Usuário ou senha estão inválidos.'
                 }, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RegisterView(CreateView):
+    model = User
+    form_class = RegisterForm
