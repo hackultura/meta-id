@@ -19,7 +19,7 @@
 			<tbody>
 				{% for application in applications %}
 				<tr>
-					<td><a href="{{application.get_absolute_url}}">{{application.name}}</a></td>
+					<td><a href="{% url 'oauth:app_detail' application.id %}">{{application.name}}</a></td>
 					<td>{{application.client_type}}</td>
 					<td>{{application.client_id}}</td>
 					<td>{{application.redirect_uris}}</td>
@@ -29,9 +29,9 @@
 		</table>
 	</ul>
 
-	<a class="btn btn-success" href="{% url "oauth2_provider:register" %}">Nova Aplicação</a>
+	<a class="btn btn-success" href="{% url "oauth:app_register" %}">Nova Aplicação</a>
 	{% else %}
-	<p>{% trans "Nenhuma aplicação definida" %}. <a href="{% url 'oauth2_provider:register' %}">{% trans "Clique aqui" %}</a> {% trans "se deseja registrar uma aplicação." %}</p>
+	<p>{% trans "Nenhuma aplicação definida" %}. <a href="{% url 'oauth:app_register' %}">{% trans "Clique aqui" %}</a> {% trans "se deseja registrar uma aplicação." %}</p>
 	{% endif %}
 </div>
 {% endblock content %}

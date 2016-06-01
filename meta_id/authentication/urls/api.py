@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import url
 from rest_framework.routers import DefaultRouter
-from meta_id.authentication.views import (
+from meta_id.authentication.views.api import (
     UserViewSet,
     LoginView,
     ChangePasswordView,
