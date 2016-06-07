@@ -11,7 +11,7 @@
 				top:-10px"><a id="signinlink" href="{% url 'login'%}">Login</a></div>
 		</div>
 		<div class="panel-body" >
-			<form id="signupform" action="{% url 'register' %}" method="POST" class="form-horizontal" role="form">
+			<form id="signupform" action="{% url 'oauth:register' %}" method="POST" class="form-horizontal" role="form">
 				{% csrf_token %}
 
 				{% if form.name.errors %}
