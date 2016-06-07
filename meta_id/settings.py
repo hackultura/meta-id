@@ -13,8 +13,6 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-import dj_database_url
-
 import raven
 
 from django.conf import settings
@@ -83,15 +81,15 @@ WSGI_APPLICATION = 'meta_id.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-# Alem disso, usando o dj-database-url que configura o banco a partir
-# da variavel de ambiente DATABASE_URL, e caso não encontre uma
-# utiliza um valor padrão.
-
-# https://pypi.python.org/pypi/dj-database-url
 DATABASES = {
-    'default': dj_database_url.config(
-        default='postgres://meta_id:123456@localhost/meta_id_app'
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ['DB_NAME'],
+        'USER': os.environ['DB_USER'],
+        'PASSWORD': os.environ['DB_PASS'],
+        'HOST': os.environ['DB_SERVICE'],
+        'PORT': os.environ['DB_PORT']
+    }
 }
 
 
@@ -135,6 +133,7 @@ TEMPLATES = [
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
@@ -271,8 +270,8 @@ if settings.DEBUG:
     }
 
 RAVEN_CONFIG = {
-        'dsn': os.getenv('RAVEN_DSN_URL'),
-        # If you are using git, you can also automatically configure the
-        # release based on the git info.
-        'release': raven.fetch_git_sha(BASE_DIR),
+    'dsn': os.getenv('RAVEN_DSN_URL'),
+    # If you are using git, you can also automatically configure the
+    # release based on the git info.
+    'release': raven.fetch_git_sha(BASE_DIR),
 }
